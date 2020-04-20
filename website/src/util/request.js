@@ -34,7 +34,8 @@ service.interceptors.response.use(response => {
             type: 'error',
             duration: 5 * 1000
         })
-        if (res.code >= 401000 && res.code <= 500000) {
+        // TODO 这里的异常代码没有规划好！
+        if (res.code >= 401010 && res.code <= 401090) {
             MessageBox.confirm(
                 'You have been logged out, you can cancel to stay on this page, or log in again',
                 'Confirm logout',
