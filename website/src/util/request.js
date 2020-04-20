@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
-import { getToken, getRefreshToken, removeToken } from '@/utils/auth'
+import { getToken, getRefreshToken, removeToken } from '@/util/auth'
 // create an axios instance
 const service = axios.create({
     baseURL: 'http://localhost:7777/dev-api', // url = base url + request url
@@ -34,7 +34,7 @@ service.interceptors.response.use(response => {
             type: 'error',
             duration: 5 * 1000
         })
-        if (res.code >= 401_000 && res.code <= 500_000) {
+        if (res.code >= 401000 && res.code <= 500000) {
             MessageBox.confirm(
                 'You have been logged out, you can cancel to stay on this page, or log in again',
                 'Confirm logout',
@@ -52,9 +52,9 @@ service.interceptors.response.use(response => {
                 location.reload()
             })
             return Promise.reject(new Error(res.msg || 'Error'))
-        } else {
-            return res
         }
+    } else {
+        return res
     }
 })
 export default service
