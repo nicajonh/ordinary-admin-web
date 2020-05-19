@@ -14,6 +14,7 @@
                     :collapse="isCollapse"
                     :collapse-transition="false"
                     unique-opened
+                    router
                     background-color="#545c64"
                     text-color="#fff"
                     active-text-color="#409eff"
