@@ -5,16 +5,23 @@ import { getAccessToken } from '@/util/auth'
 Vue.use(VueRouter)
 
 const routes = [
-    {
-        path: '/',
-        name: 'Home',
-        component: Home
-    },
+
     {
         path: '/login',
         name: 'login',
         component: () => import('@/views/Login.vue')
     },
+    {
+        path: '/',
+        name: 'Home',
+        // redirect: '/login',
+        component: Home,
+        redirect: '/welcome',
+        children: [
+            { path: '/welcome', component: () => import('@/views/Welcome.vue') }
+        ]
+    },
+ 
     {
         path: '/about',
         name: 'About',
