@@ -8,12 +8,15 @@
             <el-button type="info" @click="logout">logout</el-button>
         </el-header>
         <el-container>
-            <el-aside width="202px">
+            <el-aside :width="isCollapse ? '65px':'200px'">
+                <div class="toggle-btn" @click="toggleCollapse">|||</div>
                 <el-menu
-                     
+                    :collapse="isCollapse"
+                    :collapse-transition="false"
+                    unique-opened
                     background-color="#545c64"
                     text-color="#fff"
-                    active-text-color="#ffd04b"
+                    active-text-color="#409eff"
                 >
                     <el-submenu index="1">
                         <template slot="title">
@@ -47,7 +50,9 @@
                     </el-menu-item>
                 </el-menu>
             </el-aside>
-            <el-main>Main</el-main>
+            <el-main>
+                <router-view></router-view>
+            </el-main>
         </el-container>
     </el-container>
 </template>
@@ -60,13 +65,17 @@ export default {
     data() {
         return {
             circleUrl:
-                'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+                'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+            isCollapse: false
         }
     },
     methods: {
         logout() {
             removeToken()
             this.$router.push('/login')
+        },
+        toggleCollapse() {
+            this.isCollapse = !this.isCollapse
         }
     }
 }
@@ -90,11 +99,21 @@ export default {
 }
 .el-aside {
     background-color: #333744;
+    border-right: none;
 }
 .el-main {
     background-color: #eaedf1;
 }
 .home-container {
     height: 100%;
+}
+.toggle-btn {
+    background-color: #4a5064;
+    font-size: 13px;
+    line-height: 24px;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 0.2em;
+    cursor: pointer;
 }
 </style>
