@@ -8,7 +8,7 @@
             <el-button type="info" @click="logout">logout</el-button>
         </el-header>
         <el-container>
-            <el-aside :width="isCollapse ? '65px':'200px'">
+            <el-aside :width="isCollapse ? '65px' : '200px'">
                 <div class="toggle-btn" @click="toggleCollapse">|||</div>
                 <el-menu
                     :collapse="isCollapse"
@@ -18,8 +18,9 @@
                     background-color="#545c64"
                     text-color="#fff"
                     active-text-color="#409eff"
+                    :default-active="activePath"
                 >
-                    <el-submenu index="1">
+                    <!-- <el-submenu index="1">
                         <template slot="title">
                             <i class="el-icon-location"></i>
                             <span>导航一</span>
@@ -36,12 +37,15 @@
                             <template slot="title">选项4</template>
                             <el-menu-item index="1-4-1">选项1</el-menu-item>
                         </el-submenu>
-                    </el-submenu>
-                    <el-menu-item index="2">
+                    </el-submenu> -->
+                    <el-menu-item
+                        index="/user"
+                        @click="saveActivePath('/user')"
+                    >
                         <i class="el-icon-menu"></i>
-                        <span slot="title">导航二</span>
+                        <span slot="title">用户管理</span>
                     </el-menu-item>
-                    <el-menu-item index="3" disabled>
+                    <el-menu-item index="3" @click="saveActivePath('/111')">
                         <i class="el-icon-document"></i>
                         <span slot="title">导航三</span>
                     </el-menu-item>
@@ -67,8 +71,14 @@ export default {
         return {
             circleUrl:
                 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-            isCollapse: false
+            isCollapse: false,
+            // 被激活的链接
+            activePath: ''
         }
+    },
+    created(){
+        // 初始化被选中的链接
+        this.activePath =window.localStorage.getItem("ActivePath")
     },
     methods: {
         logout() {
@@ -77,6 +87,10 @@ export default {
         },
         toggleCollapse() {
             this.isCollapse = !this.isCollapse
+        },
+        saveActivePath(path) {
+            window.localStorage.setItem("ActivePath",path)
+            this.activePath = path
         }
     }
 }
