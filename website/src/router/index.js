@@ -5,7 +5,6 @@ import { getAccessToken } from '@/util/auth'
 Vue.use(VueRouter)
 
 const routes = [
-
     {
         path: '/login',
         name: 'login',
@@ -18,10 +17,14 @@ const routes = [
         component: Home,
         redirect: '/welcome',
         children: [
-            { path: '/welcome', component: () => import('@/views/Welcome.vue') }
+            {
+                path: '/welcome',
+                component: () => import('@/views/Welcome.vue')
+            },
+            { path: '/user', component: () => import('@/views/user') }
         ]
     },
- 
+
     {
         path: '/about',
         name: 'About',
