@@ -2,6 +2,7 @@ package com.llh.webserver.repository;
 
 import com.llh.webserver.model.SysUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
  *
  * @author llh
  */
-public interface SysUserRepo extends JpaRepository<SysUser, String> {
+public interface SysUserRepo extends JpaRepository<SysUser, String>, QuerydslPredicateExecutor<SysUser> {
     /**
      * 根据用户名查找数据
      *

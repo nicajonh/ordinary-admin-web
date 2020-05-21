@@ -2,6 +2,8 @@ package com.llh.webserver.service;
 
 import com.llh.webserver.common.constant.AccountStatus;
 import com.llh.webserver.model.SysUser;
+import com.llh.webserver.pojo.SimplePageQueryVO;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -29,4 +31,12 @@ public interface SysUserService extends BasicService<SysUser>, UserDetailsServic
      * 帐户激活状态
      */
     int ACTIVE_ACCOUNT = AccountStatus.ACTIVE.ordinal();
+
+    /**
+     * 分页查询方法
+     *
+     * @param queryVO 查询VO
+     * @return 分页查询结果
+     */
+    Page<SysUser> pageQuery(SimplePageQueryVO<SysUser> queryVO);
 }
