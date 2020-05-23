@@ -1,5 +1,7 @@
 package com.llh.webserver.common.config;
 
+import com.llh.webserver.common.config.security.JwtAuthenticationEntryPoint;
+import com.llh.webserver.common.config.security.JwtAuthenticationTokenFilter;
 import com.llh.webserver.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -61,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             .csrf().disable()
             // 基于token，所以不需要session
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.authorizeRequests()
             // 放行OPTIONS请求
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -84,6 +88,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             .antMatchers("/auth/**").permitAll()
             // 除上面外的所有请求全部需要鉴权认证
             .anyRequest().authenticated();
+        // 异常处理
+        http.exceptionHandling()
+            .authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+        // 添加JWT filter
+        http.addFilterBefore(
+            authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+    }
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() {
+        return new JwtAuthenticationTokenFilter();
     }
 
 }
