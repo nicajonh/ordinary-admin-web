@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
-import { getToken, getRefreshToken, removeToken } from '@/util/auth'
+import { getAccessToken, removeToken } from '@/util/auth' // getRefreshToken
 // create an axios instance
 const service = axios.create({
     baseURL: 'http://localhost:7777/dev-api', // url = base url + request url
@@ -13,9 +13,9 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
-        if (getToken() && getRefreshToken()) {
-            config.headers['authorization'] = getToken()
-            config.headers['refresh_token'] = getRefreshToken()
+        if (getAccessToken() /*&& getRefreshToken() */) {
+            config.headers['authorization'] = getAccessToken()
+            // config.headers['refresh_token'] = getRefreshToken()
         }
         return config
     },
