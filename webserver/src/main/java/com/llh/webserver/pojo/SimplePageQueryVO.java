@@ -19,9 +19,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel("简单的分页查询参数查询类。")
 public class SimplePageQueryVO<T extends BasicModel> {
-    @ApiModelProperty(value = "页数",required = true)
+    @ApiModelProperty(value = "页数", required = true)
     private Integer pageNumber;
-    @ApiModelProperty(value = "每页数量",required = true)
+    @ApiModelProperty(value = "每页数量", required = true)
     private Integer pageSize;
     @ApiModelProperty("排序字段")
     private String orderField;
@@ -30,4 +30,9 @@ public class SimplePageQueryVO<T extends BasicModel> {
     @ApiModelProperty("查询条件。简单查询都是查询模型类的字段。")
     private T model;
 
+    public Integer getPageNumber() {
+        // JPA分页插件页码从0开始的。
+        // 前端分页插件是从1开始的。
+        return Math.max(pageNumber - 1, 0);
+    }
 }
