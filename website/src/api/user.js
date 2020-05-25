@@ -10,3 +10,11 @@ export function pageUserList(data) {
         params: data
     })
 }
+
+export function addUser(data) {
+    return request({
+        url: '/user',
+        method: 'post',
+        data
+    })
+}

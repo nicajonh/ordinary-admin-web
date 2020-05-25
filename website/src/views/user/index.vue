@@ -18,7 +18,9 @@
                     </el-input>
                 </el-col>
                 <el-col :span="2">
-                    <el-button type="primary" @click="dialogVisible = true">添加用户</el-button>
+                    <el-button type="primary" @click="dialogVisible = true">
+                        添加用户
+                    </el-button>
                 </el-col>
             </el-row>
 
@@ -85,17 +87,64 @@
             ></el-pagination>
         </el-card>
 
- 
         <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
+            title="修改用户信息"
+            :visible.sync="editDialogVisible"
             width="30%"
-            
+            @close="addFormClosed"
         >
-            <span>这是一段信息</span>
+            <el-form
+                :model="editForm"
+                :rules="addFormClosed"
+                ref="editFormRef"
+                label-width="100px"
+            >
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="addForm.username"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="addForm.password"></el-input>
+                </el-form-item>
+
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="addForm.email"></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">
+                <el-button type="primary" @click="handleAddForm">
+                    确 定
+                </el-button>
+            </span>
+        </el-dialog>
+
+
+        <el-dialog
+            title="添加用户"
+            :visible.sync="addDialogVisible"
+            width="30%"
+            @close="addFormClosed"
+        >
+            <el-form
+                :model="addForm"
+                :rules="addFormRules"
+                ref="addFormRef"
+                label-width="100px"
+            >
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="addForm.username"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="addForm.password"></el-input>
+                </el-form-item>
+
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="addForm.email"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleAddForm">
                     确 定
                 </el-button>
             </span>
@@ -104,11 +153,23 @@
 </template>
 
 <script>
-import { pageUserList } from '@/api/user.js'
+import { pageUserList, addUser } from '@/api/user.js'
+import { Message } from 'element-ui'
 export default {
     data() {
+        var checkEmail = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('邮箱不能为空'))
+            }
+            var regx = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/
+            if (regx.test(value)) {
+                return callback()
+            }
+            return callback(new Error('请输入正确的邮箱地址'))
+        }
         return {
-            dialogVisible:false,
+            addDialogVisible: false,
+            editDialogVisible: false,
             queryInfo: {
                 pageNumber: 0,
                 pageSize: 2,
@@ -120,6 +181,47 @@ export default {
                 list: [],
                 totalPage: 0,
                 totalEle: 0
+            },
+            addForm: {
+                // TODO 这里将数据清空
+                username: 'Jerry',
+                password: '123',
+                email: '848719061@qq.com'
+            },
+            addFormRules: {
+                username: [
+                    {
+                        required: true,
+                        message: '请输入用户名',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 3,
+                        max: 15,
+                        message: '长度在 3 到 15 个字符',
+                        trigger: 'blur'
+                    }
+                ],
+                password: [
+                    {
+                        required: true,
+                        message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 3,
+                        max: 15,
+                        message: '长度在 3 到 15 个字符',
+                        trigger: 'blur'
+                    }
+                ],
+                email: [
+                    {
+                        validator: checkEmail,
+                        trigger: 'blur',
+                        required: true
+                    }
+                ]
             }
         }
     },
@@ -138,6 +240,23 @@ export default {
         handleCurrentChange(curPage) {
             this.queryInfo.pageNumber = curPage
             this.getUserList()
+        },
+        addFormClosed() {
+            this.$refs['addFormRef'].resetFields()
+        },
+        handleAddForm() {
+            this.$refs['addFormRef'].validate(valid => {
+                if (!valid) return
+                addUser(this.addForm).then(() => {
+                    Message({
+                        message: '用户添加成功',
+                        type: 'success',
+                        duration: 5 * 1000
+                    })
+                    this.dialogVisible = false
+                    this.getUserList()
+                })
+            })
         }
     },
     created() {
