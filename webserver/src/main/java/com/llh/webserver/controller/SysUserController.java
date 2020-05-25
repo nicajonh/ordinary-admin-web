@@ -3,13 +3,13 @@ package com.llh.webserver.controller;
 import com.llh.webserver.model.SysUser;
 import com.llh.webserver.pojo.JsonWrapper;
 import com.llh.webserver.pojo.SimplePageQueryVO;
+import com.llh.webserver.pojo.auth.RegisterOrUpdateVO;
+import com.llh.webserver.service.AuthService;
 import com.llh.webserver.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * SysUserController
@@ -25,12 +25,20 @@ public class SysUserController extends BasicController {
     @Autowired
     @Qualifier("sysUserService")
     private SysUserService userService;
+    @Autowired
+    @Qualifier("authService")
+    private AuthService authService;
 
     @GetMapping
     public JsonWrapper page(SimplePageQueryVO<SysUser> pageQueryVO) {
         Page<SysUser> page = userService.pageQuery(pageQueryVO);
         return JsonWrapper.ok(page);
+    }
 
+    @PostMapping
+    public JsonWrapper add(@RequestBody RegisterOrUpdateVO user) {
+        RegisterOrUpdateVO register = authService.register(user);
+        return JsonWrapper.ok(register);
     }
 
 }

@@ -110,7 +110,7 @@ public class SysUserServiceImpl implements SysUserService {
             sort = Sort.by(StrUtil.isNotBlank(queryVO.getOrderType())
                 ? Sort.Direction.fromString(queryVO.getOrderType())
                 : Sort.Direction.ASC, queryVO.getOrderField());
-        return PageRequest.of(queryVO.getPageNumber(), queryVO.getPageSize(), sort);
+        return PageRequest.of(queryVO.getPageNumber()  , queryVO.getPageSize(), sort);
     }
 
     private Predicate handleQueryParam(SimplePageQueryVO<SysUser> queryVO) {

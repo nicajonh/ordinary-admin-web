@@ -1,6 +1,7 @@
 package com.llh.webserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.llh.webserver.common.constant.AccountStatus;
 import com.llh.webserver.pojo.auth.PermissionWrapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,9 @@ public class SysUser extends BasicModel implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private String email;
+
+
     /**
      * 修改密码
      */
@@ -45,6 +49,7 @@ public class SysUser extends BasicModel implements UserDetails {
     public String newPassword;
     /**
      * 帐户状态
+     * {@link AccountStatus}
      */
     private Integer accountStatus;
 
