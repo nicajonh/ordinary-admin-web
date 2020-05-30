@@ -45,7 +45,6 @@ public class SysUser extends BasicModel implements UserDetails {
      * 修改密码
      */
     @Transient
-    @JsonIgnore
     public String newPassword;
     /**
      * 帐户状态
