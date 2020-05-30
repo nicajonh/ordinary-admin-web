@@ -20,6 +20,8 @@ public enum BasicExpEnum implements RespCodeMsg {
     TOKEN_PARSE_EXCEPTION(DATA_ERROR_CODE + 5, "TOKEN解析异常"),
     TOKEN_NO_USERNAME_EXCEPTION(DATA_ERROR_CODE + 6, "TOKEN中不包含username信息"),
     TOKEN_NO_USER_ID_EXCEPTION(DATA_ERROR_CODE + 7, "TOKEN中不包含user-id信息"),
+    DATA_VERSION_ERROR(DATA_ERROR_CODE + 8, "数据版本信息异常"),
+    DATA_VERSION_NOT_EQ_ERROR(DATA_ERROR_CODE + 9, "数据版本信息不一致"),
 
     // 授权异常
     Auth_ERROR(AUTH_ERROR_CODE, "用户名或密码异常"),
