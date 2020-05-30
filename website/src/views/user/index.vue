@@ -60,11 +60,12 @@
                 </el-table-column>
 
                 <el-table-column label="操作" width="150px">
-                    <template>
+                    <template v-slot="scope">
                         <el-button
                             type="primary"
                             icon="el-icon-edit"
                             size="mini"
+                            @click="showEditDialog(scope.row.id)"
                         ></el-button>
 
                         <el-button
@@ -91,28 +92,25 @@
             title="修改用户信息"
             :visible.sync="editDialogVisible"
             width="30%"
-            @close="addFormClosed"
+            @close="editFormClosed"
         >
             <el-form
                 :model="editForm"
-                :rules="addFormClosed"
+                :rules="editFormRules"
                 ref="editFormRef"
                 label-width="100px"
             >
                 <el-form-item label="用户名" prop="username">
-                    <el-input v-model="addForm.username"></el-input>
-                </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="addForm.password"></el-input>
+                    <el-input v-model="editForm.username"></el-input>
                 </el-form-item>
 
                 <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="addForm.email"></el-input>
+                    <el-input v-model="editForm.email"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="handleAddForm">
+                <el-button @click="editFormClosed()">取 消</el-button>
+                <el-button type="primary" @click="handleEditForm">
                     确 定
                 </el-button>
             </span>
@@ -153,7 +151,7 @@
 </template>
 
 <script>
-import { pageUserList, addUser } from '@/api/user.js'
+import { pageUserList, addUser, fetchUser, updateUser } from '@/api/user.js'
 import { Message } from 'element-ui'
 export default {
     data() {
@@ -188,7 +186,7 @@ export default {
                 password: '123',
                 email: '848719061@qq.com'
             },
-            editForm:{},
+            editForm: {},
             addFormRules: {
                 username: [
                     {
@@ -207,6 +205,28 @@ export default {
                     {
                         required: true,
                         message: '请输入密码',
+                        trigger: 'blur'
+                    },
+                    {
+                        min: 3,
+                        max: 15,
+                        message: '长度在 3 到 15 个字符',
+                        trigger: 'blur'
+                    }
+                ],
+                email: [
+                    {
+                        validator: checkEmail,
+                        trigger: 'blur',
+                        required: true
+                    }
+                ]
+            },
+            editFormRules: {
+                username: [
+                    {
+                        required: true,
+                        message: '请输入用户名',
                         trigger: 'blur'
                     },
                     {
@@ -246,6 +266,10 @@ export default {
             this.$refs['addFormRef'].resetFields()
             this.addDialogVisible = false
         },
+        editFormClosed() {
+            this.$refs['editFormRef'].resetFields()
+            this.editDialogVisible = false
+        },
         handleAddForm() {
             this.$refs['addFormRef'].validate(valid => {
                 if (!valid) return
@@ -260,6 +284,31 @@ export default {
                     this.getUserList()
                 })
             })
+        },
+        handleEditForm() {
+            this.$refs['editFormRef'].validate(valid => {
+                if (!valid) return
+                updateUser(this.editForm).then(() => {
+                    this.editDialogVisible = false
+                    this.getUserList()
+                })
+            })
+        },
+        showEditDialog(id) {
+            fetchUser(id)
+                .then(resp => {
+                    this.editForm = resp.data
+
+                    this.editDialogVisible = true
+                })
+                .catch(err => {
+                    Message({
+                        message: '获取用户信息失败！',
+                        type: 'error',
+                        duration: 5 * 1000
+                    })
+                    console.error(' ', err)
+                })
         }
     },
     created() {
