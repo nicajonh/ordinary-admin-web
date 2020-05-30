@@ -41,4 +41,16 @@ public class SysUserController extends BasicController {
         return JsonWrapper.ok(register);
     }
 
+    @GetMapping("{userId}")
+    public JsonWrapper userInfo(@PathVariable("userId") String userId) {
+        SysUser user = userService.findById(userId);
+        return JsonWrapper.ok(user);
+    }
+
+    @PostMapping("update")
+    public JsonWrapper update(@RequestBody SysUser user) {
+        userService.updateById(user);
+        return JsonWrapper.ok(user);
+    }
+
 }

@@ -64,6 +64,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional
     public SysUser updateById(SysUser entity) {
         SysUser user = findById(entity.getId());
+        checkVersion(user, entity);
         if (StrUtil.isNotBlank(entity.getNewPassword()))
             user.setPassword(passwordEncoder.encode(entity.getNewPassword()));
         BeanUtil.copyProperties(entity, user, getCopyOptions());
@@ -110,7 +111,7 @@ public class SysUserServiceImpl implements SysUserService {
             sort = Sort.by(StrUtil.isNotBlank(queryVO.getOrderType())
                 ? Sort.Direction.fromString(queryVO.getOrderType())
                 : Sort.Direction.ASC, queryVO.getOrderField());
-        return PageRequest.of(queryVO.getPageNumber()  , queryVO.getPageSize(), sort);
+        return PageRequest.of(queryVO.getPageNumber(), queryVO.getPageSize(), sort);
     }
 
     private Predicate handleQueryParam(SimplePageQueryVO<SysUser> queryVO) {
