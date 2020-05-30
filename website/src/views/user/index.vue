@@ -107,6 +107,10 @@
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="editForm.email"></el-input>
                 </el-form-item>
+
+                <el-form-item label="新密码" prop="newPassword">
+                    <el-input v-model="editForm.newPassword"></el-input>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editFormClosed()">取 消</el-button>
@@ -154,6 +158,7 @@
 import { pageUserList, addUser, fetchUser, updateUser } from '@/api/user.js'
 import { Message } from 'element-ui'
 export default {
+    
     data() {
         var checkEmail = (rule, value, callback) => {
             if (!value) {
@@ -236,6 +241,14 @@ export default {
                         trigger: 'blur'
                     }
                 ],
+                newPassword: [
+                    {
+                        min: 3,
+                        max: 15,
+                        message: '长度在 3 到 15 个字符',
+                        trigger: 'blur'
+                    }
+                ],
                 email: [
                     {
                         validator: checkEmail,
@@ -247,6 +260,7 @@ export default {
         }
     },
     methods: {
+        // 获取列表数据
         getUserList() {
             pageUserList(this.queryInfo).then(resp => {
                 this.pageObj.list = resp.data.content
@@ -254,22 +268,27 @@ export default {
                 this.pageObj.totalEle = resp.data.totalElements
             })
         },
+        // 处理分页大小变化
         handleSizeChange(newSize) {
             this.queryInfo.pageSize = newSize
             this.getUserList()
         },
+        // 处理当前页变更
         handleCurrentChange(curPage) {
             this.queryInfo.pageNumber = curPage
             this.getUserList()
         },
+        // 关闭新增弹出框
         addFormClosed() {
             this.$refs['addFormRef'].resetFields()
             this.addDialogVisible = false
         },
+        // 关闭编辑弹出框
         editFormClosed() {
             this.$refs['editFormRef'].resetFields()
             this.editDialogVisible = false
         },
+        // 提交新增表单的信息
         handleAddForm() {
             this.$refs['addFormRef'].validate(valid => {
                 if (!valid) return
@@ -285,20 +304,31 @@ export default {
                 })
             })
         },
+        // 提交编辑后的信息
         handleEditForm() {
             this.$refs['editFormRef'].validate(valid => {
                 if (!valid) return
-                updateUser(this.editForm).then(() => {
-                    this.editDialogVisible = false
-                    this.getUserList()
-                })
+                updateUser(this.editForm)
+                    .then(resp => {
+                        this.editDialogVisible = false
+                        this.getUserList()
+                        if (resp.data)
+                            Message({
+                                message: '用户修改成功',
+                                type: 'success',
+                                duration: 5 * 1000
+                            })
+                    })
+                    .catch(e => {
+                        console.error(e)
+                    })
             })
         },
+        // 打开编辑弹出框
         showEditDialog(id) {
             fetchUser(id)
                 .then(resp => {
                     this.editForm = resp.data
-
                     this.editDialogVisible = true
                 })
                 .catch(err => {
