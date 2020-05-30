@@ -3,6 +3,8 @@ package com.llh.webserver.service;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ArrayUtil;
 import com.llh.webserver.common.constant.DataStatus;
+import com.llh.webserver.common.exception.BusinessException;
+import com.llh.webserver.common.exception.msg.BasicExpEnum;
 import com.llh.webserver.model.BasicModel;
 
 import java.time.LocalDateTime;
@@ -44,6 +46,18 @@ public interface BasicService<T extends BasicModel> {
      */
     default MyCopyOptions getCopyOptions() {
         return new MyCopyOptions();
+    }
+
+    /**
+     * 核对两个表实体类的版本信息字段。
+     * 不一致时会抛出自定义异常。
+     */
+    default void checkVersion(BasicModel m1, BasicModel m2) {
+        if (null == m1.getVersion() || null == m2.getVersion()) {
+            throw new BusinessException(BasicExpEnum.DATA_VERSION_ERROR);
+        }
+        if (!m1.getVersion().equals(m2.getVersion()))
+            throw new BusinessException(BasicExpEnum.DATA_VERSION_NOT_EQ_ERROR);
     }
 }
 
