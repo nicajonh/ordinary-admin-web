@@ -18,7 +18,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span="2">
-                    <el-button type="primary" @click="dialogVisible = true">
+                    <el-button type="primary" @click="addDialogVisible = true">
                         添加用户
                     </el-button>
                 </el-col>
@@ -86,7 +86,7 @@
                 :total="pageObj.totalEle"
             ></el-pagination>
         </el-card>
-
+        <!-- 修改用户信息弹出框 -->
         <el-dialog
             title="修改用户信息"
             :visible.sync="editDialogVisible"
@@ -118,7 +118,7 @@
             </span>
         </el-dialog>
 
-
+        <!-- 添加用户弹出框 -->
         <el-dialog
             title="添加用户"
             :visible.sync="addDialogVisible"
@@ -143,7 +143,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="addFormClosed()">取 消</el-button>
                 <el-button type="primary" @click="handleAddForm">
                     确 定
                 </el-button>
@@ -188,6 +188,7 @@ export default {
                 password: '123',
                 email: '848719061@qq.com'
             },
+            editForm:{},
             addFormRules: {
                 username: [
                     {
@@ -243,6 +244,7 @@ export default {
         },
         addFormClosed() {
             this.$refs['addFormRef'].resetFields()
+            this.addDialogVisible = false
         },
         handleAddForm() {
             this.$refs['addFormRef'].validate(valid => {
@@ -253,7 +255,8 @@ export default {
                         type: 'success',
                         duration: 5 * 1000
                     })
-                    this.dialogVisible = false
+                    this.$refs['addFormRef'].resetFields()
+                    this.addDialogVisible = false
                     this.getUserList()
                 })
             })
