@@ -29,7 +29,7 @@ public interface BasicService<T extends BasicModel> {
 
     T save(T entity);
 
-    T remove(String id);
+    Boolean remove(String id);
 
     T updateById(T entity);
 

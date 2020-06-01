@@ -54,10 +54,11 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional
-    public SysUser remove(String id) {
+    public Boolean remove(String id) {
         SysUser user = findById(id);
         user.setDataStatus(REMOVE);
-        return userRepo.save(user);
+        userRepo.save(user);
+        return user.getDataStatus().equals(REMOVE);
     }
 
     @Override
