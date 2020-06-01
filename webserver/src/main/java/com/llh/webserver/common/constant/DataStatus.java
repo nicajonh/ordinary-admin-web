@@ -11,9 +11,9 @@ public interface DataStatus {
     /**
      * 数据正常状态。
      */
-    int PERSISTENCE = 0;
+    int PERSISTENCE = 1;
     /**
      * 数据被移除状态。
      */
-    int REMOVE = 1;
+    int REMOVE = 0;
 }
