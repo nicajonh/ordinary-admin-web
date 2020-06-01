@@ -5,9 +5,9 @@ import request from '@/util/request'
 
 export function pageUserList(data) {
     return request({
-        url: '/user',
-        method: 'get',
-        params: data
+        url: '/user/list',
+        method: 'post',
+        data
     })
 }
 
@@ -19,11 +19,10 @@ export function addUser(data) {
     })
 }
 
-
 export function fetchUser(userId) {
     return request({
         url: '/user/' + userId,
-        method: 'get',
+        method: 'get'
     })
 }
 export function updateUser(data) {
@@ -31,5 +30,12 @@ export function updateUser(data) {
         url: '/user/update',
         method: 'post',
         data
+    })
+}
+
+export function removeUser(id) {
+    return request({
+        url: '/user/remove/' + id,
+        method: 'get'
     })
 }

@@ -10,10 +10,11 @@
         <el-card>
             <el-row :gutter="15">
                 <el-col :span="6" :xl="4">
-                    <el-input placeholder="请输入内容">
+                    <el-input placeholder="请输入用户名" v-model="queryInfo.model.username">
                         <el-button
                             slot="append"
                             icon="el-icon-search"
+                            @click="getUserList()"
                         ></el-button>
                     </el-input>
                 </el-col>
@@ -72,6 +73,7 @@
                             size="mini"
                             type="danger"
                             icon="el-icon-delete-solid"
+                            @click="removeUser(scope.row.id)"
                         ></el-button>
                     </template>
                 </el-table-column>
@@ -81,7 +83,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="queryInfo.pageNumber"
-                :page-sizes="[2, 5, 10, 50]"
+                :page-sizes="[ 5, 10, 50]"
                 :page-size="queryInfo.pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="pageObj.totalEle"
@@ -155,10 +157,15 @@
 </template>
 
 <script>
-import { pageUserList, addUser, fetchUser, updateUser } from '@/api/user.js'
+import {
+    pageUserList,
+    addUser,
+    fetchUser,
+    updateUser,
+    removeUser
+} from '@/api/user.js'
 import { Message } from 'element-ui'
 export default {
-    
     data() {
         var checkEmail = (rule, value, callback) => {
             if (!value) {
@@ -175,10 +182,12 @@ export default {
             editDialogVisible: false,
             queryInfo: {
                 pageNumber: 0,
-                pageSize: 2,
+                pageSize: 5,
                 orderField: undefined,
                 orderType: undefined,
-                model: undefined
+                model: {
+                    username:'',
+                },
             },
             pageObj: {
                 list: [],
@@ -339,8 +348,34 @@ export default {
                     })
                     console.error(' ', err)
                 })
+        },
+        //
+        removeUser(id) {
+            this.$confirm('此操作将删除条信息, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+                .then(() => {
+                    removeUser(id).then(resp => {
+                        this.getUserList()
+                        if (resp.data) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                        }
+                    })
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
         }
     },
+
     created() {
         this.getUserList()
     }

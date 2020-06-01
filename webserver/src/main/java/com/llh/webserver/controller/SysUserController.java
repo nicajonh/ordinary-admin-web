@@ -32,9 +32,9 @@ public class SysUserController extends BasicController {
     @Qualifier("authService")
     private AuthService authService;
 
-    @GetMapping
+    @PostMapping("list")
     @ApiOperation("获取用户列表，并以分页的形式返回。")
-    public JsonWrapper page(SimplePageQueryVO<SysUser> pageQueryVO) {
+    public JsonWrapper page(@RequestBody SimplePageQueryVO<SysUser> pageQueryVO) {
         Page<SysUser> page = userService.pageQuery(pageQueryVO);
         return JsonWrapper.ok(page);
     }
@@ -58,6 +58,13 @@ public class SysUserController extends BasicController {
     public JsonWrapper update(@RequestBody SysUser user) {
         userService.updateById(user);
         return JsonWrapper.ok(user);
+    }
+
+    @GetMapping("remove/{id}")
+    @ApiOperation("移除用户信息。")
+    public JsonWrapper remove(@PathVariable String id) {
+        Boolean remove = userService.remove(id);
+        return JsonWrapper.ok(remove);
     }
 
 }
