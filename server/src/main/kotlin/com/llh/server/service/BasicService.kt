@@ -12,12 +12,24 @@ import java.time.LocalDateTime
  */
 interface BasicService<E> {
 
+    /**
+     * 保存
+     */
     fun save(entity: E): E
 
+    /**
+     * 移除
+     */
     fun remove(id: String): Boolean
 
+    /**
+     * 根据id更新信息 entity.id属性不能为空
+     */
     fun updateById(entity: E): Boolean
 
+    /**
+     * 根据id查找信息。可能找不到。
+     */
     fun findById(id: String): E?
 
     fun getNow(): LocalDateTime = LocalDateTime.now()

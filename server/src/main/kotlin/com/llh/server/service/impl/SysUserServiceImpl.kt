@@ -2,6 +2,7 @@ package com.llh.server.service.impl
 
 import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysUser
+import com.llh.server.model.copyProperties
 import com.llh.server.service.SysUserService
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.and
@@ -10,9 +11,9 @@ import me.liuwj.ktorm.dsl.update
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
+import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * SysUserServiceImpl
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
  * @author llh
  */
 @Service("sysUserService")
-class SysUserServiceImpl : SysUserService {
+class SysUserServiceImpl : SysUserService, Logging {
 
     @Autowired
     private lateinit var database: Database
@@ -49,13 +50,19 @@ class SysUserServiceImpl : SysUserService {
     }
 
     override fun updateById(entity: SysUser): Boolean {
-        TODO("not implemented")
+        val model = findById(entity.id) ?: return false
+        model.copyProperties(entity)
+        model.updatedAt = getNow()
+        return model.flushChanges() > 0
     }
 
     override fun findById(id: String): SysUser? {
-        return database.sequenceOf(SysUsers).find {
-            it.id eq id
+        val find = database.sequenceOf(SysUsers).find {
+            it.id eq id and (it.dataStatus eq persistence)
         }
+        if (find == null)
+            logger.warn("not find user(id:${id}) info")
+        return find
     }
 
     override fun findTopByUsername(username: String): SysUser? {

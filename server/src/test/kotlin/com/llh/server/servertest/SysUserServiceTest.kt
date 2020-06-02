@@ -29,6 +29,17 @@ class SysUserServiceTest {
         val u = sysUserService.findTopByUsername("Tom")
         println(u)
     }
+    @Test
+    @Transactional
+    @Rollback
+    fun testUpdate(){
+        val u = SysUser()
+        u.username = "Lucy"
+        u.email = "ha@b.c"
+        u.id = "ea9446eb-c54e-418f-ab0f-7b196aadf6e5"
+        val updateById = sysUserService.updateById(u)
+        println(updateById)
+    }
 
     @Test
     @Transactional

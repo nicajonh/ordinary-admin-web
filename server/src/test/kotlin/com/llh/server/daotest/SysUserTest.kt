@@ -3,6 +3,9 @@ package com.llh.server.daotest
 import com.llh.server.dao.SysUsers
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.eq
+import me.liuwj.ktorm.dsl.from
+import me.liuwj.ktorm.dsl.max
+import me.liuwj.ktorm.dsl.select
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.findById
 import me.liuwj.ktorm.entity.sequenceOf
@@ -27,5 +30,12 @@ class SysUserTest {
         val user = database.sequenceOf(SysUsers)
             .find { it.id eq "b258e8ba-d642-4bb8-bf91-782d20cf2177" }
         println(user)
+    }
+
+    @Test
+    fun testQuery2() {
+        database.from(SysUsers)
+            .select(max(SysUsers.username))
+            .forEach { row -> println(row.getString(1)) }
     }
 }
