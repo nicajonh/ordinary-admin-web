@@ -2,6 +2,7 @@ package com.llh.server.service
 
 import com.llh.server.common.constant.AccountStatus
 import com.llh.server.model.SysUser
+import org.springframework.security.core.userdetails.UserDetailsService
 
 
 /**
@@ -11,7 +12,7 @@ import com.llh.server.model.SysUser
  *
  * @author llh
  */
-interface SysUserService : BasicService<SysUser> {
+interface SysUserService : BasicService<SysUser>, UserDetailsService {
     /**
      * 根据用户名[username]查找数据
      */

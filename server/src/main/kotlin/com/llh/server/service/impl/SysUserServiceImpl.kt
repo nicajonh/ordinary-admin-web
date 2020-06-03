@@ -3,6 +3,8 @@ package com.llh.server.service.impl
 import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysUser
 import com.llh.server.model.copyProperties
+import com.llh.server.pojo.AccountVO
+import com.llh.server.pojo.createEmptyAccount
 import com.llh.server.service.SysUserService
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.and
@@ -13,6 +15,7 @@ import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
 /**
@@ -65,6 +68,11 @@ class SysUserServiceImpl : SysUserService, Logging {
         return find
     }
 
+    override fun loadUserByUsername(username: String?): UserDetails {
+        username ?: return createEmptyAccount()
+        return convertAccount(findTopByUsername(username))
+    }
+
     override fun findTopByUsername(username: String): SysUser? {
         return database.sequenceOf(SysUsers)
             .find {
@@ -73,4 +81,12 @@ class SysUserServiceImpl : SysUserService, Logging {
     }
 
 
+    /**
+     * 将用户类转换为帐户类。
+     * 默认返回空的帐户类。
+     */
+    private fun convertAccount(user: SysUser?): AccountVO {
+        user ?: return createEmptyAccount()
+        return AccountVO(user.username, user.password)
+    }
 }

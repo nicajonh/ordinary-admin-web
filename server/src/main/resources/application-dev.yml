@@ -19,3 +19,8 @@ logging:
 # generate swagger docs
 swagger2:
     enable: true
+
+# jwt 配置
+jwt:
+    header: authorization
+    refreshToken: refresh_token

@@ -1,6 +1,7 @@
 package com.llh.server.model
 
 import me.liuwj.ktorm.entity.Entity
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 
 /**
