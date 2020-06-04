@@ -24,3 +24,10 @@ swagger2:
 jwt:
     header: authorization
     refreshToken: refresh_token
+    secretKey: waibiwaibiwaibibabu
+    expiration: 100
+    accessTokenExpireTime: P30D
+    refreshTokenExpireTime: PT8H
+    refreshTokenExpireAppTime: P30D
+    issuer: llh.com
+    secret: areyougoodmalaixiya
