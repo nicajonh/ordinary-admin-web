@@ -43,8 +43,10 @@ class JwtTokenUtil : Logging {
      * @param claims  存储在JWT里面的信息
      * @return refresh_token
      */
-    fun generateRefreshToken(subject: String, claims: MutableMap<String, Any>): String {
-        claims["typ"] = "refresh_token"
+    fun generateRefreshToken(subject: String, claims: Map<String, Any>): String {
+        if (claims is MutableMap) {
+            claims["typ"] = "refresh_token"
+        }
         return generateToken(issuer, subject, claims, refreshTokenExpireTime.toMillis(), secretKey);
     }
 
@@ -55,8 +57,10 @@ class JwtTokenUtil : Logging {
      * @param claims  存储在JWT里面的信息
      * @return access_token
      */
-    fun generateAccessToken(subject: String, claims: MutableMap<String, Any>): String {
-        claims["typ"] = "access_token"
+    fun generateAccessToken(subject: String, claims: Map<String, Any>): String {
+        if (claims is MutableMap) {
+            claims["typ"] = "refresh_token"
+        }
         return generateToken(issuer, subject, claims, accessTokenExpireTime.toMillis(), secretKey);
     }
 
@@ -141,7 +145,7 @@ class JwtTokenUtil : Logging {
      * @return 加密生成的token
      */
     fun generateToken(issuer: String, subject: String?,
-                      claims: MutableMap<String, Any>?, ttlMillis: Long,
+                      claims: Map<String, Any>?, ttlMillis: Long,
                       secret: String): String {
         val alg = SignatureAlgorithm.HS256
         val nowMillis = System.currentTimeMillis()
