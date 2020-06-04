@@ -20,6 +20,7 @@ import org.apache.logging.log4j.kotlin.Logging
  * @author llh
  */
 @Component
+@Suppress("unused")
 class JwtTokenUtil : Logging {
     @Value("\${jwt.secretKey}")
     lateinit var secretKey: String
@@ -47,7 +48,7 @@ class JwtTokenUtil : Logging {
         if (claims is MutableMap) {
             claims["typ"] = "refresh_token"
         }
-        return generateToken(issuer, subject, claims, refreshTokenExpireTime.toMillis(), secretKey);
+        return generateToken(issuer, subject, claims, refreshTokenExpireTime.toMillis(), secretKey)
     }
 
     /**
@@ -61,7 +62,7 @@ class JwtTokenUtil : Logging {
         if (claims is MutableMap) {
             claims["typ"] = "refresh_token"
         }
-        return generateToken(issuer, subject, claims, accessTokenExpireTime.toMillis(), secretKey);
+        return generateToken(issuer, subject, claims, accessTokenExpireTime.toMillis(), secretKey)
     }
 
     /**
@@ -148,7 +149,6 @@ class JwtTokenUtil : Logging {
                       claims: Map<String, Any>?, ttlMillis: Long,
                       secret: String): String {
         val alg = SignatureAlgorithm.HS256
-        val nowMillis = System.currentTimeMillis()
         // 用于加密的字符串转换为字节
         val signingKey = DatatypeConverter.parseAnySimpleType(secret)
         val builder = Jwts.builder()
