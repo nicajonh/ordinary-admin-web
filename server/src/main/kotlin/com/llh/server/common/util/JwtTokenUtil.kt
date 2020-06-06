@@ -110,7 +110,8 @@ class JwtTokenUtil : Logging {
      * 令牌内容不为空并且没有过期，则令牌是可用的。
      * @return 令牌是否可用。
      */
-    fun validateToken(token: String): Boolean {
+    fun validateToken(token: String?): Boolean {
+        token ?: return false
         val claimsFromToken = extractClaimsFrom(token)
         return (null != claimsFromToken) && isTokenExpired(token)
     }

@@ -30,24 +30,30 @@ const val AUTH_ERROR_CODE = 401_000
 const val DATA_ERROR_CODE = 510_000
 
 /**
- * 空接口。
  * 主要为了给枚举类作标记的，以后传参数方便。
  */
 interface SysExpInfo {
-
+    fun getSelfCode(): Int
+    fun getSelfMsg(): String
 }
 
-enum class BasicExp(code: Int, msg: String) : SysExpInfo {
+
+enum class BasicExp(val code: Int, val msg: String) : SysExpInfo {
     SUCCESS(SUCCESS_CODE, "操作成功"),
-
     SYSTEM_ERROR(SYSTEM_ERROR_CODE, "系统异常"),
-
     DATA_ERROR(DATA_ERROR_CODE, "数据异常"),
 
     // 授权异常
-    Auth_ERROR(AUTH_ERROR_CODE, "用户名或密码异常"), ;
+    Auth_ERROR(AUTH_ERROR_CODE, "用户名或密码异常"),
+    ;
 
+    override fun getSelfCode(): Int {
+        return this.code
+    }
 
+    override fun getSelfMsg(): String {
+        return this.msg
+    }
 }
 
 
@@ -56,6 +62,18 @@ enum class AuthExpInfo(val code: Int, val msg: String) : SysExpInfo {
     ACCOUNT_ERROR(AUTH_ERROR_CODE + 2, "帐户异常"),
     DENIED(AUTH_ERROR_CODE + 3, "权限不足"),
     NOT_LOGIN(AUTH_ERROR_CODE + 4, "未登录"),
+    LOGIN_ERROR(AUTH_ERROR_CODE + 5, "帐户或密码错误"),
+
+    ;
+
+
+    override fun getSelfCode(): Int {
+        return this.code
+    }
+
+    override fun getSelfMsg(): String {
+        return this.msg
+    }
 
 }
 
