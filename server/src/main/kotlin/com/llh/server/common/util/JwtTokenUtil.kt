@@ -3,6 +3,7 @@ package com.llh.server.common.util
 
 import cn.hutool.core.util.StrUtil
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.JwsHeader
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
@@ -80,6 +81,19 @@ class JwtTokenUtil : Logging {
         }
     }
 
+    fun extractJwtHeader(token: String): JwsHeader<out JwsHeader<*>>? {
+        return try {
+            Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseAnySimpleType(secretKey))
+                .parseClaimsJws(token)
+                .header
+
+        } catch (e: Exception) {
+            logger.error("Parse token error ,this token is $token")
+            return null
+        }
+    }
+
     /**
      * 从token中获取用户id。
      */
@@ -93,7 +107,7 @@ class JwtTokenUtil : Logging {
      */
     fun extractUsername(token: String): String? {
         val claims = extractClaimsFrom(token)
-        return claims?.get(JWT_USERNAME) as String
+        return claims?.get(JWT_USERNAME) as String?
     }
 
     /**
@@ -101,7 +115,7 @@ class JwtTokenUtil : Logging {
      */
     fun isTokenExpired(token: String): Boolean {
         val isExpired = extractClaimsFrom(token)
-            ?.expiration?.before(Date())
+            ?.expiration?.after(Date())
         return isExpired ?: true
     }
 
@@ -153,7 +167,9 @@ class JwtTokenUtil : Logging {
         // 用于加密的字符串转换为字节
         val signingKey = DatatypeConverter.parseAnySimpleType(secret)
         val builder = Jwts.builder()
-        claims ?: builder.setClaims(claims)
+        if (claims is MutableMap) {
+            builder.setClaims(claims)
+        }
         if (StrUtil.isNotBlank(subject)) {
             builder.setSubject(subject)
         }
