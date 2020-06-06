@@ -14,7 +14,7 @@ server:
 
 logging:
     level:
-        root: error
+        root: info
         me.liuwj.ktorm: debug
 # generate swagger docs
 swagger2:
