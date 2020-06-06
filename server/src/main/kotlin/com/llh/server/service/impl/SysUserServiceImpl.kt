@@ -87,6 +87,6 @@ class SysUserServiceImpl : SysUserService, Logging {
      */
     private fun convertAccount(user: SysUser?): AccountVO {
         user ?: return createEmptyAccount()
-        return AccountVO(user.username, user.password)
+        return AccountVO(user.username, user.password, user.id)
     }
 }

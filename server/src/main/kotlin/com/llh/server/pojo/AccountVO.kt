@@ -10,17 +10,19 @@ import org.springframework.security.core.userdetails.UserDetails
  *
  * @author llh
  */
-class AccountVO(private var account: String, private var pwd: String) : UserDetails {
+class AccountVO(private val account: String,
+                private val pwd: String,
+                val id: String) : UserDetails {
 
-    private val emptySet = mutableSetOf<PermissionWrapper>()
+    private val permsSet = mutableSetOf<PermissionWrapper>()
 
     fun addAuthority(perm: PermissionWrapper): AccountVO {
-        this.emptySet.add(perm)
+        this.permsSet.add(perm)
         return this
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return emptySet
+        return permsSet
     }
 
     override fun isEnabled(): Boolean {
@@ -55,7 +57,7 @@ class PermissionWrapper(private var authority: String) : GrantedAuthority {
 }
 
 fun createEmptyAccount(): AccountVO {
-    return AccountVO("", "")
+    return AccountVO("", "", "")
 }
 
 
