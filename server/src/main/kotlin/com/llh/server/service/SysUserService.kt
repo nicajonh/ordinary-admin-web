@@ -2,6 +2,8 @@ package com.llh.server.service
 
 import com.llh.server.common.constant.AccountStatus
 import com.llh.server.model.SysUser
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import org.springframework.security.core.userdetails.UserDetailsService
 
 
@@ -17,6 +19,8 @@ interface SysUserService : BasicService<SysUser>, UserDetailsService {
      * 根据用户名[username]查找数据
      */
     fun findTopByUsername(username: String): SysUser?
+
+    fun page(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser>
 
     val inactive: Int
         get() = AccountStatus.INACTIVE.ordinal

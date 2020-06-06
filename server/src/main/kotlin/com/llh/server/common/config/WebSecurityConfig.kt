@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -28,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -40,10 +42,14 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
     @Autowired
     @Qualifier("sysUserService")
     private lateinit var sysUserService: SysUserService
+
+    @Autowired
+    private lateinit var jwtAuthenticationTokenFilter: JwtAuthenticationTokenFilter
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -58,7 +64,13 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
      * 全局CORS配置
      */
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
+        registry.addMapping("/**")// 允许跨域访问的路径
+            .allowedOrigins("*")// 允许跨域访问的源
+            .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")// 允许请求方法
+            .maxAge(168000)// 预检间隔时间
+            .allowedHeaders("*")// 允许头部设置
+            .allowCredentials(true) // 是否发送cookie
+
     }
 
     override fun configure(http: HttpSecurity) {
@@ -90,7 +102,15 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
         // 异常处理（登陆失败的处理）
         http.exceptionHandling()
             .authenticationEntryPoint(UnauthorizedEntryPoint())
+        // 添加JWT filter
+        http.addFilterBefore(
+            jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
 
+    }
+
+    @Bean
+    fun unauthorizedEntryPoint(): UnauthorizedEntryPoint {
+        return UnauthorizedEntryPoint()
     }
 
 }

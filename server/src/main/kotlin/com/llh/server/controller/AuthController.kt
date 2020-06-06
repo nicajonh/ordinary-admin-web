@@ -4,7 +4,6 @@ import com.llh.server.pojo.JsonWrapper
 import com.llh.server.pojo.okResponse
 import com.llh.server.pojo.vo.LoginVO
 import com.llh.server.service.AuthService
-import com.llh.server.service.SysUserService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.apache.logging.log4j.kotlin.Logging

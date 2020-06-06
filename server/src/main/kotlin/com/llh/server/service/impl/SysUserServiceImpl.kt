@@ -1,18 +1,20 @@
 package com.llh.server.service.impl
 
+import cn.hutool.core.util.StrUtil
 import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysUser
 import com.llh.server.model.copyProperties
 import com.llh.server.pojo.AccountVO
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.createEmptyAccount
 import com.llh.server.service.SysUserService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
+import me.liuwj.ktorm.schema.ColumnDeclaring
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
@@ -80,6 +82,30 @@ class SysUserServiceImpl : SysUserService, Logging {
             }
     }
 
+    override fun page(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser> {
+        return pageQuery(queryVO)
+    }
+
+    private fun pageQuery(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser> {
+        var total = 0
+        val query = database.from(SysUsers)
+            .select(SysUsers.columns)
+            .whereWithConditions {
+                if (StrUtil.isNotBlank(queryVO.model?.username)) {
+                    it += SysUsers.username like "%${queryVO.model!!.username}%"
+                }
+                it += SysUsers.dataStatus eq persistence
+            }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
+            .map { row ->
+                total = row.query.totalRecords
+                SysUsers.createEntity(row)
+            }
+        return PageDTO(
+            content = query,
+            totalElements = total,
+            pageSize = queryVO.pageSize
+        )
+    }
 
     /**
      * 将用户类转换为帐户类。
