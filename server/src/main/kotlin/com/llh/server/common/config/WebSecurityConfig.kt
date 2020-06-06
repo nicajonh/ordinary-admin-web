@@ -9,6 +9,7 @@ package com.llh.server.common.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.llh.server.common.constant.AuthExpInfo
+import com.llh.server.common.util.JwtTokenUtil
 import com.llh.server.service.SysUserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -16,15 +17,18 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
@@ -106,6 +110,13 @@ class JwtAuthenticationTokenFilter : OncePerRequestFilter() {
     @Value("\${jwt.refreshToken}")
     private lateinit var refreshTokenHeader: String
 
+    @Autowired
+    private lateinit var jwtTokenUtil: JwtTokenUtil
+
+    @Autowired
+    @Qualifier("sysUserService")
+    private lateinit var userService: SysUserService
+
     override fun doFilterInternal(request: HttpServletRequest,
                                   response: HttpServletResponse,
                                   filterChain: FilterChain) {
@@ -115,7 +126,16 @@ class JwtAuthenticationTokenFilter : OncePerRequestFilter() {
             return
         }
         val authHeader = request.getHeader(this.tokenHeader)
-
-        TODO("not implemented")
+        if (jwtTokenUtil.validateToken(authHeader)) {
+            val username = jwtTokenUtil.extractUsername(authHeader)
+            if (username != null) {
+                val userDetails = userService.loadUserByUsername(username)
+                val authentication = UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.authorities)
+                authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = authentication
+            }
+        }
+        filterChain.doFilter(request, response)
     }
 }
