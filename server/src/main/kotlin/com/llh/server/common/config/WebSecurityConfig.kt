@@ -31,6 +31,8 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -38,7 +40,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
     @Autowired
     @Qualifier("sysUserService")
     private lateinit var sysUserService: SysUserService
@@ -50,6 +52,13 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth?.userDetailsService(this.sysUserService)
             ?.passwordEncoder(passwordEncoder());
+    }
+
+    /**
+     * 全局CORS配置
+     */
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
     }
 
     override fun configure(http: HttpSecurity) {
@@ -67,6 +76,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 "/**/*.html",
                 "/**/*.css",
                 "/swagger/**",
+                "/actuator/**",
                 "/v2/api-docs",
                 "/swagger-ui.html",
                 "/swagger-resources/**",
