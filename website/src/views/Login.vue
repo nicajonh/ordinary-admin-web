@@ -39,6 +39,7 @@
 <script>
 import { login } from '@/api/auth'
 import { setAccessToken } from '@/util/auth'
+import { Message } from 'element-ui'
 export default {
     data() {
         return {
@@ -81,12 +82,17 @@ export default {
             this.$refs.loginFormRef.validate(valid => {
                 if (!valid) return
                 login(this.loginForm).then(resp => {
-                    setAccessToken(resp.data.accessToken)
-                    this.$router.push('/')
-                    this.$message.success('登录成功！')
+                    if (resp.data) {
+                        setAccessToken(resp.data.accessToken)
+                        this.$router.push('/')
+                        this.$message.success('登录成功！')
+                    } else {
+                        Message({
+                            message: '登录失败！',
+                            type: 'error'
+                        })
+                    }
                 })
-
-                
             })
         }
     }
