@@ -186,7 +186,7 @@ export default {
             queryInfo: {
                 pageNumber: 1,
                 pageSize: 5,
-                orderField: 'updated_at',
+                orderField: 'updatedAt',
                 orderType: 'asc',
                 model: {
                     username: ''
