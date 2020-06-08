@@ -27,8 +27,6 @@ public class BasicModel implements Serializable {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @Version
-    private Integer version;
 
     private Integer dataStatus;
 
