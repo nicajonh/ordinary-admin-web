@@ -147,7 +147,7 @@ public class JwtTokenUtil {
         try {
             Claims claims = getClaimsFromToken(token);
             Date expiration = claims.getExpiration();
-            return expiration.before(new Date());
+            return expiration.after(new Date());
         } catch (Exception e) {
             log.error("Unable to verify whether the token has expired , this token is {} \n", token, e);
             return true;
