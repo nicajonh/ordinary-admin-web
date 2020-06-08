@@ -10,7 +10,10 @@
         <el-card>
             <el-row :gutter="15">
                 <el-col :span="6" :xl="4">
-                    <el-input placeholder="请输入用户名" v-model="queryInfo.model.username">
+                    <el-input
+                        placeholder="请输入用户名"
+                        v-model="queryInfo.model.username"
+                    >
                         <el-button
                             slot="append"
                             icon="el-icon-search"
@@ -83,7 +86,7 @@
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="queryInfo.pageNumber"
-                :page-sizes="[ 5, 10, 50]"
+                :page-sizes="[5, 10, 50]"
                 :page-size="queryInfo.pageSize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="pageObj.totalEle"
@@ -181,13 +184,13 @@ export default {
             addDialogVisible: false,
             editDialogVisible: false,
             queryInfo: {
-                pageNumber: 0,
+                pageNumber: 1,
                 pageSize: 5,
-                orderField: undefined,
-                orderType: undefined,
+                orderField: 'updated_at',
+                orderType: 'asc',
                 model: {
-                    username:'',
-                },
+                    username: ''
+                }
             },
             pageObj: {
                 list: [],

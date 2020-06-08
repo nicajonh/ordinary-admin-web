@@ -28,7 +28,7 @@ export function fetchUser(userId) {
 export function updateUser(data) {
     return request({
         url: '/user/update',
-        method: 'post',
+        method: 'put',
         data
     })
 }
