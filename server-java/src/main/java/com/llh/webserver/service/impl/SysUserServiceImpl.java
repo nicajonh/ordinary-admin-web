@@ -63,7 +63,6 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional
     public SysUser updateById(SysUser entity) {
         SysUser user = findById(entity.getId());
-        checkVersion(user, entity);
         if (StrUtil.isNotBlank(entity.getNewPassword()))
             user.setPassword(passwordEncoder.encode(entity.getNewPassword()));
         BeanUtil.copyProperties(entity, user, getCopyOptions());

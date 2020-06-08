@@ -23,6 +23,9 @@ public class SimplePageQueryVO<T extends BasicModel> {
     private Integer pageNumber;
     @ApiModelProperty(value = "每页数量", required = true)
     private Integer pageSize;
+    /**
+     * 使用JPA时，此字段传入的是Java bean属性名。
+     */
     @ApiModelProperty("排序字段")
     private String orderField;
     @ApiModelProperty("排序方式。asc or desc")
