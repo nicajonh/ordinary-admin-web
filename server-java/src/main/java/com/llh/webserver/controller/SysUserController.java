@@ -53,7 +53,7 @@ public class SysUserController extends BasicController {
         return JsonWrapper.ok(user);
     }
 
-    @PostMapping("update")
+    @PutMapping("update")
     @ApiOperation("更新用户信息。")
     public JsonWrapper update(@RequestBody SysUser user) {
         userService.updateById(user);
