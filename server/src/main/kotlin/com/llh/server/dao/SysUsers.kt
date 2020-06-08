@@ -1,10 +1,9 @@
 package com.llh.server.dao
 
-import com.llh.server.dao.SysUsers.bindTo
-import com.llh.server.dao.SysUsers.primaryKey
-import com.llh.server.model.BaseEntity
 import com.llh.server.model.SysUser
+import me.liuwj.ktorm.dsl.QueryRowSet
 import me.liuwj.ktorm.schema.*
+import java.time.LocalDateTime
 
 /**
  * SysUsers
@@ -13,22 +12,27 @@ import me.liuwj.ktorm.schema.*
  *
  * @author llh
  */
+object SysUsers : BasicTableDSL<SysUser>("sys_user") {
+    val username by varchar("username")
+    val password by varchar("password")
+    val email by varchar("email")
+    val accountStatus by int("account_status")
+    override fun doCreateEntity(row: QueryRowSet, withReferences: Boolean) = createEntity(row)
 
-abstract class BaseTable<E : BaseEntity<E>>(tableName: String) : Table<E>(tableName) {
+    @JvmStatic
+    fun createEntity(row: QueryRowSet): SysUser {
+        val model = SysUser(
+            username = row[username].orEmpty()
+            , password = row[password].orEmpty()
+            , email = row[email].orEmpty()
+            , accountStatus = row[accountStatus] ?: 0
+        )
+        model.id = row[SysDepts.id].orEmpty()
+        model.updatedBy = row[SysDepts.updatedBy]
+        model.dataStatus = row[SysDepts.dataStatus] ?: false
+        model.createdAt = row[SysDepts.createdAt] ?: LocalDateTime.now()
+        model.updatedAt = row[SysDepts.updatedAt] ?: LocalDateTime.now()
+        return model
+    }
 
-    val id by varchar("id").primaryKey().bindTo { it.id }
-    val createdAt by datetime("created_at").bindTo { it.createdAt }
-    val updatedAt by datetime("updated_at").bindTo { it.updatedAt }
-    val dataStatus by boolean("data_status").bindTo { it.dataStatus }
-    val updatedBy by varchar("updated_by").bindTo { it.updatedBy }
-    val createdBy by varchar("created_by").bindTo { it.createdBy }
-
-}
-
-object SysUsers : BaseTable<SysUser>("sys_user") {
-
-    val username by varchar("username").bindTo { it.username }
-    val password by varchar("password").bindTo { it.password }
-    val email by varchar("email").bindTo { it.email }
-    val accountStatus by int("account_status").bindTo { it.accountStatus }
 }

@@ -2,12 +2,8 @@ package com.llh.server.daotest
 
 import com.llh.server.dao.SysUsers
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.from
-import me.liuwj.ktorm.dsl.max
-import me.liuwj.ktorm.dsl.select
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.find
-import me.liuwj.ktorm.entity.findById
 import me.liuwj.ktorm.entity.sequenceOf
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,4 +34,22 @@ class SysUserTest {
             .select(max(SysUsers.username))
             .forEach { row -> println(row.getString(1)) }
     }
+
+    @Test
+    fun testPage() {
+        var total = 0
+        val query = database.from(SysUsers)
+            .select()
+//            .where { SysUsers.username like "Tom" }
+            .map { row ->
+                total = row.query.totalRecords
+                SysUsers.createEntity(row)
+            }
+
+        println(total)
+        println(query[2])
+
+    }
+
+
 }

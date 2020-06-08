@@ -93,6 +93,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
                 "/swagger-ui.html",
                 "/swagger-resources/**",
                 "/webjars/**",
+                "/test/**", // 测试
                 "/druid/**",
                 "/favicon.ico"
             ).permitAll()
