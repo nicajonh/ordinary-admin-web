@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  *
  * @author llh
  */
-interface BasicService<E> : ServiceHelper {
+interface BasicService<E> {
 
     /**
      * 保存
@@ -40,7 +40,7 @@ interface BasicService<E> : ServiceHelper {
  * 提供服务层公共方法。
  * 避免单继承限制使用接口。
  */
-interface ServiceHelper {
+open class ServiceHelper {
     fun getNow(): LocalDateTime = LocalDateTime.now()
 
     val remove: Boolean

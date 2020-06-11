@@ -19,4 +19,6 @@ interface SysUser : BasicModel<SysUser> {
 
     var email: String
 
+    var accountStatus: Int
+
 }

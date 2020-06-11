@@ -1,6 +1,8 @@
 package com.llh.server.dao
 
 import com.llh.server.model.SysUser
+import me.liuwj.ktorm.schema.boolean
+import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.varchar
 
 /**
@@ -14,4 +16,5 @@ object SysUsers : BasicDao<SysUser>("sys_user") {
     val username by varchar("username").bindTo { it.username }
     val password by varchar("password").bindTo { it.password }
     val email by varchar("email").bindTo { it.email }
+    val accountStatus by int("account_status").bindTo { it.accountStatus }
 }

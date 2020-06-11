@@ -42,10 +42,17 @@ class SysUserController {
         return okResponse(user)
     }
 
+    @DeleteMapping("delete/{userId}")
+    @ApiOperation("根据用户id移除用户信息。")
+    fun remove(@PathVariable("userId") userId: String): JsonWrapper {
+        val remove = sysUserService.remove(userId)
+        return okResponse(remove)
+    }
+
     @PostMapping
     @ApiOperation("新增一个用户。")
-    fun add(userVO: RegisterOrUpdateVO): JsonWrapper {
-        println(userVO)
+    fun add(@RequestBody userVO: RegisterOrUpdateVO): JsonWrapper {
+        val saved: Boolean = sysUserService.registerUser(userVO)
         return okResponse("")
     }
 

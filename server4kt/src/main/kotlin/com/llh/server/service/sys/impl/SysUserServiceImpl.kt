@@ -1,13 +1,12 @@
 package com.llh.server.service.sys.impl
 
 import cn.hutool.core.util.StrUtil
+import com.llh.server.common.util.uuidStr
 import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysUser
 import com.llh.server.model.copyProperties
-import com.llh.server.pojo.AccountVO
-import com.llh.server.pojo.PageDTO
-import com.llh.server.pojo.SimplePageQueryVO
-import com.llh.server.pojo.createEmptyAccount
+import com.llh.server.pojo.*
+import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysUserService
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.*
@@ -17,6 +16,7 @@ import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 /**
@@ -27,15 +27,19 @@ import org.springframework.stereotype.Service
  * @author llh
  */
 @Service("sysUserService")
-class SysUserServiceImpl : SysUserService, Logging {
+class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
 
     @Autowired
     private lateinit var database: Database
+
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
 
 
     override fun save(entity: SysUser): SysUser {
         entity.createdAt = getNow()
         entity.updatedAt = getNow()
+        entity.accountStatus = activation
         entity.dataStatus = persistence
         database.sequenceOf(SysUsers).add(entity)
         return entity
@@ -84,6 +88,17 @@ class SysUserServiceImpl : SysUserService, Logging {
         return pageQuery(queryVO)
     }
 
+    override fun registerUser(userVO: RegisterOrUpdateVO): Boolean {
+        val user = SysUser {
+            id = uuidStr()
+            username = userVO.username
+            password = passwordEncoder.encode(userVO.password)
+            email = userVO.email
+        }
+        save(user)
+        return user.id == ""
+    }
+
     private fun pageQuery(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser> {
         var total = 0
         val query = database.from(SysUsers)
@@ -94,6 +109,7 @@ class SysUserServiceImpl : SysUserService, Logging {
                 }
                 it += SysUsers.dataStatus eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
+            .orderBy(SysUsers.updatedAt.desc())
             .map { row ->
                 total = row.query.totalRecords
                 SysUsers.createEntity(row)
