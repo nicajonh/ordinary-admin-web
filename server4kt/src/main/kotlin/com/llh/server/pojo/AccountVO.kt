@@ -62,7 +62,7 @@ fun createEmptyAccount(): AccountVO {
 
 data class RegisterOrUpdateVO(
     val username: String,
-    val password: String,
+    val password: String?,
     val newPassword: String?,
     val id: String?,
     val email: String,

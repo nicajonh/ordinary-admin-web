@@ -35,7 +35,7 @@ export function updateUser(data) {
 
 export function removeUser(id) {
     return request({
-        url: '/user/remove/' + id,
-        method: 'get'
+        url: '/user/delete/' + id,
+        method: 'delete'
     })
 }

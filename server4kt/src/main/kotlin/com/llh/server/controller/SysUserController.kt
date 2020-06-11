@@ -53,13 +53,14 @@ class SysUserController {
     @ApiOperation("新增一个用户。")
     fun add(@RequestBody userVO: RegisterOrUpdateVO): JsonWrapper {
         val saved: Boolean = sysUserService.registerUser(userVO)
-        return okResponse("")
+        return okResponse(saved)
     }
 
     @PutMapping("update")
     @ApiOperation("更新用户信息。")
     fun update(@RequestBody userVO: RegisterOrUpdateVO): JsonWrapper {
-        println(userVO)
-        return okResponse("")
+        val updated: Boolean? = sysUserService.updateUser(userVO)
+        updated ?: return okResponse(false, msg = "更新用户信息失败！")
+        return okResponse(updated)
     }
 }

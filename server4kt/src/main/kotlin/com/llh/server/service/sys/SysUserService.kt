@@ -29,6 +29,11 @@ interface SysUserService : BasicService<SysUser>, UserDetailsService {
      */
     fun registerUser(userVO: RegisterOrUpdateVO): Boolean
 
+    /**
+     * 更新用户信息的方法
+     */
+    fun updateUser(userVO: RegisterOrUpdateVO): Boolean?
+
     val inactive: Int
         get() = AccountStatus.INACTIVE.ordinal
     val activation: Int
