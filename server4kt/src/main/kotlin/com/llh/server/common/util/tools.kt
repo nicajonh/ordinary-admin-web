@@ -7,9 +7,7 @@
  */
 package com.llh.server.common.util
 
-import java.util.UUID
-
 
 fun uuidStr(): String {
-    return UUID.randomUUID().toString().replace("-", "")
+    return "${SnowFlake(2, 3).nextId()}"
 }
