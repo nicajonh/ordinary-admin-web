@@ -22,7 +22,7 @@ interface BasicModel<E : BasicModel<E>> : Entity<E> {
     var id: String
     var createdAt: LocalDateTime
     var updatedAt: LocalDateTime
-    var dataStatus: Boolean
+    var removeFlag: Boolean
     var updatedBy: String?
     var createdBy: String?
 }
@@ -61,7 +61,7 @@ open class BasicModelDSL {
     var id: String = uuidStr()
     var createdAt: LocalDateTime = LocalDateTime.now()
     var updatedAt: LocalDateTime = LocalDateTime.now()
-    var dataStatus: Boolean = true
+    var removeFlag: Boolean = true
     var updatedBy: String? = null
     var createdBy: String? = null
 }

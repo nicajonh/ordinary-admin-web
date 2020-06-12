@@ -39,14 +39,14 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
         entity.createdAt = getNow()
         entity.updatedAt = getNow()
         entity.accountStatus = activation
-        entity.dataStatus = persistence
+        entity.removeFlag = persistence
         database.sequenceOf(SysUsers).add(entity)
         return entity
     }
 
     override fun remove(id: String): Boolean {
         val updated = database.update(SysUsers) {
-            it.dataStatus to remove
+            it.removeFlag to remove
             it.updatedAt to getNow()
             where {
                 it.id eq id
@@ -64,7 +64,7 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
 
     override fun findById(id: String): SysUser? {
         val find = database.sequenceOf(SysUsers).find {
-            it.id eq id and (it.dataStatus eq persistence)
+            it.id eq id and (it.removeFlag eq persistence)
         }
         if (find == null)
             logger.warn("not find user(id:${id}) info")
@@ -79,7 +79,7 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
     override fun findTopByUsername(username: String): SysUser? {
         return database.sequenceOf(SysUsers)
             .find {
-                it.username eq username and (it.dataStatus eq true)
+                it.username eq username and (it.removeFlag eq true)
             }
     }
 
@@ -124,7 +124,7 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
                 if (queryVO.model?.username?.isNotBlank() == true) {
                     it += SysUsers.username like "%${queryVO.model.username}%"
                 }
-                it += SysUsers.dataStatus eq persistence
+                it += SysUsers.removeFlag eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
             .orderBy(SysUsers.updatedAt.desc())
             .map { row ->
