@@ -22,6 +22,9 @@ interface SysUserService : BasicService<SysUser>, UserDetailsService {
      */
     fun findTopByUsername(username: String): SysUser?
 
+    /**
+     * 简单信息的分页信息
+     */
     fun page(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser>
 
     /**

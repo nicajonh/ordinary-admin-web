@@ -1,14 +1,15 @@
 package com.llh.server.service.sys.impl
 
 import com.llh.server.dao.SysDepts
+import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysDept
 import com.llh.server.model.copyProperties
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysDeptService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
@@ -59,5 +60,31 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
         if (find == null)
             logger.warn("not find sys_dept(id:${id}) info")
         return find
+    }
+
+    override fun page(queryVO: SimplePageQueryVO<SysDept>): PageDTO<SysDept> {
+        return pageQuery(queryVO)
+    }
+
+    private fun pageQuery(queryVO: SimplePageQueryVO<SysDept>): PageDTO<SysDept> {
+        var total = 0
+        val query = database.from(SysDepts)
+            .select(SysDepts.columns)
+            .whereWithConditions {
+                if (queryVO.model?.deptName?.isNotBlank() == true) {
+                    it += SysDepts.deptName like "%${queryVO.model.deptName}%"
+                }
+                it += SysDepts.removeFlag eq persistence
+            }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
+            .orderBy(SysUsers.updatedAt.desc())
+            .map { row ->
+                total = row.query.totalRecords
+                SysDepts.createEntity(row)
+            }
+        return PageDTO(
+            content = query,
+            totalElements = total,
+            pageSize = queryVO.pageSize
+        )
     }
 }
