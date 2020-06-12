@@ -103,14 +103,14 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
     override fun updateUser(userVO: RegisterOrUpdateVO): Boolean? {
         userVO.id ?: return false
         val user = findById(userVO.id)
-        if (StrTools.isBlank(userVO.newPassword)) {
+        if (userVO.newPassword?.isNotBlank() == true) {
             user?.password = passwordEncoder.encode(userVO.newPassword)
         }
         if (userVO.username != user?.username) {
             user?.username = userVO.username
         }
-        if (!StrTools.isBlank(userVO.email) && userVO.email != user?.email) {
-            user?.email = userVO.email
+        if (user?.email?.isNotBlank() == true && userVO.email != user.email) {
+            user.email = userVO.email
         }
         val changes = user?.flushChanges()
 
@@ -118,12 +118,13 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
     }
 
     private fun pageQuery(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser> {
+
         var total = 0
         val query = database.from(SysUsers)
             .select(SysUsers.columns)
             .whereWithConditions {
-                if (StrUtil.isNotBlank(queryVO.model?.username)) {
-                    it += SysUsers.username like "%${queryVO.model!!.username}%"
+                if (queryVO.model?.username?.isNotBlank() == true) {
+                    it += SysUsers.username like "%${queryVO.model.username}%"
                 }
                 it += SysUsers.dataStatus eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
