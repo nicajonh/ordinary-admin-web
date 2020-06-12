@@ -1,6 +1,7 @@
 package com.llh.server.service
 
 import com.llh.server.common.constant.StatusConstant
+import com.llh.server.model.BasicModel
 import java.time.LocalDateTime
 
 /**
@@ -40,11 +41,20 @@ interface BasicService<E> {
  * 提供服务层公共方法。
  * 避免单继承限制使用接口。
  */
-open class ServiceHelper {
+open class ServiceHelper<E : BasicModel<E>> {
     fun getNow(): LocalDateTime = LocalDateTime.now()
 
     val remove: Boolean
         get() = StatusConstant.REMOVE.status
     val persistence: Boolean
         get() = StatusConstant.PERSISTENCE.status
+
+    /**
+     * 给要保存到数据库的[model]初始化部分值
+     */
+    fun initValueForModelToDB(model: E) {
+        model.createdAt = getNow()
+        model.updatedAt = getNow()
+        model.removeFlag = persistence
+    }
 }

@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service
  * @author llh
  */
 @Service("sysUserService")
-class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
+class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
 
     @Autowired
     private lateinit var database: Database
@@ -36,10 +36,8 @@ class SysUserServiceImpl : ServiceHelper(), SysUserService, Logging {
 
 
     override fun save(entity: SysUser): SysUser {
-        entity.createdAt = getNow()
-        entity.updatedAt = getNow()
+        initValueForModelToDB(entity)
         entity.accountStatus = activation
-        entity.removeFlag = persistence
         database.sequenceOf(SysUsers).add(entity)
         return entity
     }
