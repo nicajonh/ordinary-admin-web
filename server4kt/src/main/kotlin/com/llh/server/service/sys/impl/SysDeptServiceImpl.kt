@@ -66,7 +66,7 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
         val list = database.from(SysDepts)
             .select(SysDepts.columns)
             .where { SysDepts.removeFlag eq persistence }
-            .orderBy(SysDepts.parentId.asc())
+            .orderBy(SysDepts.parentId.asc(), SysDepts.orderNum.asc()) // 这里的排序条件对生成树形结构数据至关重要！
             .map { row -> SysDepts.createEntity(row) }
         return genTreeData(list)
     }
@@ -74,6 +74,7 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
     private fun genTreeData(list: List<SysDept>): SysDept {
         val root = SysDept()
         root.deptName = "部门树" // 暂时先写死吧
+        root.id = ""
         val treeMap = mutableMapOf<String?, SysDept>()
         treeMap[null] = root
         for (dept in list) {

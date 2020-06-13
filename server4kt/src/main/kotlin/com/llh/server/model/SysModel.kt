@@ -44,4 +44,11 @@ interface SysDept : BasicModel<SysDept> {
      * 显示顺序
      */
     var orderNum: Int
+
+    /**
+     * 子部门。
+     * 不要与数据库数据进行映射
+     */
+    var children: MutableList<SysDept>
+
 }

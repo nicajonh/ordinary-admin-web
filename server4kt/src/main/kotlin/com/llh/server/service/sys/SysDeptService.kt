@@ -23,4 +23,10 @@ interface SysDeptService : BasicService<SysDept> {
      * 通过[infoVO]类保存部门信息。
      */
     fun saveByVO(infoVO: DeptInfoVO): SysDept
+
+    /**
+     * 获取树结构信息
+     */
+    fun takeTreeInfo(): SysDept
+
 }

@@ -45,9 +45,9 @@
                         <i class="el-icon-menu"></i>
                         <span slot="title">用户管理</span>
                     </el-menu-item>
-                    <el-menu-item index="3" @click="saveActivePath('/111')">
+                    <el-menu-item index="/dept" @click="saveActivePath('/dept')">
                         <i class="el-icon-document"></i>
-                        <span slot="title">导航三</span>
+                        <span slot="title">部门管理</span>
                     </el-menu-item>
                     <el-menu-item index="4">
                         <i class="el-icon-setting"></i>

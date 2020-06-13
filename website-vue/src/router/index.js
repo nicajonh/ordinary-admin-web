@@ -21,7 +21,8 @@ const routes = [
                 path: '/welcome',
                 component: () => import('@/views/Welcome.vue')
             },
-            { path: '/user', component: () => import('@/views/user') }
+            { path: '/user', component: () => import('@/views/user') },
+            { path: '/dept', component: () => import('@/views/dept') }
         ]
     },
 
