@@ -9,7 +9,7 @@ package com.llh.server.common.constant
 
 
 enum class StatusConstant(val status: Boolean) {
-    PERSISTENCE(true), REMOVE(false)
+    PERSISTENCE(false), REMOVE(true)
 }
 
 enum class AccountStatus {
