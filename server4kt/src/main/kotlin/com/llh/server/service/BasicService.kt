@@ -1,7 +1,10 @@
 package com.llh.server.service
 
 import com.llh.server.common.constant.StatusConstant
+import com.llh.server.common.util.uuidStr
 import com.llh.server.model.BasicModel
+import com.llh.server.pojo.AccountVO
+import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
 
 /**
@@ -56,5 +59,16 @@ open class ServiceHelper<E : BasicModel<E>> {
         model.createdAt = getNow()
         model.updatedAt = getNow()
         model.removeFlag = persistence
+        model.createdBy = currentUserId()
+        model.id = uuidStr()
+    }
+
+    fun currentUser(): AccountVO? {
+        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        return authentication.principal as AccountVO
+    }
+
+    fun currentUserId(): String? {
+        return currentUser()?.id
     }
 }

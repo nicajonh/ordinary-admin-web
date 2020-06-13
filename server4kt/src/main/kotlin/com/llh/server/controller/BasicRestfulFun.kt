@@ -12,6 +12,7 @@ import com.llh.server.pojo.SimplePageQueryVO
  *
  * @author llh
  */
+@Deprecated("好像并不提取公共的方法体。先留着，以后再决定是否删除。")
 interface BasicRestfulFun<E : BasicModel<E>> {
 
     fun page(pageQueryVO: SimplePageQueryVO<E>): JsonWrapper
