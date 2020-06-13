@@ -5,6 +5,7 @@ import com.llh.server.model.SysDept
 import com.llh.server.model.copyProperties
 import com.llh.server.pojo.PageDTO
 import com.llh.server.pojo.SimplePageQueryVO
+import com.llh.server.pojo.vo.DeptInfoVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysDeptService
 import me.liuwj.ktorm.database.Database
@@ -63,6 +64,16 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
 
     override fun page(queryVO: SimplePageQueryVO<SysDept>): PageDTO<SysDept> {
         return pageQuery(queryVO)
+    }
+
+    override fun saveByVO(infoVO: DeptInfoVO): SysDept {
+        val dept = SysDept()
+        dept.deptName = infoVO.deptName
+        if (!infoVO.parentId.isNullOrBlank()) {
+            dept.parentId = infoVO.parentId
+        }
+        dept.orderNum = infoVO.orderNum
+        return save(dept)
     }
 
     private fun pageQuery(queryVO: SimplePageQueryVO<SysDept>): PageDTO<SysDept> {
