@@ -62,6 +62,34 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
         return find
     }
 
+    override fun takeTreeInfo(): SysDept {
+        val list = database.from(SysDepts)
+            .select(SysDepts.columns)
+            .where { SysDepts.removeFlag eq persistence }
+            .orderBy(SysDepts.parentId.asc())
+            .map { row -> SysDepts.createEntity(row) }
+        return genTreeData(list)
+    }
+
+    private fun genTreeData(list: List<SysDept>): SysDept {
+        val root = SysDept()
+        root.deptName = "部门树" // 暂时先写死吧
+        val treeMap = mutableMapOf<String?, SysDept>()
+        treeMap[null] = root
+        for (dept in list) {
+            if (dept.parentId.isNullOrBlank()) {
+                treeMap[null]?.children?.add(dept)
+                treeMap[dept.id] = dept
+                continue
+            }
+            if (treeMap.containsKey(dept.parentId)) {
+                treeMap[dept.parentId]?.children?.add(dept)
+            }
+            treeMap[dept.id] = dept
+        }
+        return root
+    }
+
     override fun page(queryVO: SimplePageQueryVO<SysDept>): PageDTO<SysDept> {
         return pageQuery(queryVO)
     }
