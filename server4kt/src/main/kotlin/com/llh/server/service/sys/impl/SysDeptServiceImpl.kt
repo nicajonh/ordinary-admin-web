@@ -1,7 +1,6 @@
 package com.llh.server.service.sys.impl
 
 import com.llh.server.dao.SysDepts
-import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysDept
 import com.llh.server.model.copyProperties
 import com.llh.server.pojo.PageDTO
@@ -76,7 +75,7 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
                 }
                 it += SysDepts.removeFlag eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
-            .orderBy(SysUsers.updatedAt.desc())
+            .orderBy(SysDepts.updatedAt.desc())
             .map { row ->
                 total = row.query.totalRecords
                 SysDepts.createEntity(row)

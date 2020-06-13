@@ -30,9 +30,18 @@ interface SysUser : BasicModel<SysUser> {
 interface SysDept : BasicModel<SysDept> {
     companion object : Entity.Factory<SysDept>()
 
+    /**
+     * 父部门id
+     */
     var parentId: String?
 
+    /**
+     * 部门名称
+     */
     var deptName: String
 
+    /**
+     * 显示顺序
+     */
     var orderNum: Int
 }
