@@ -77,7 +77,7 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
     override fun findTopByUsername(username: String): SysUser? {
         return database.sequenceOf(SysUsers)
             .find {
-                it.username eq username and (it.removeFlag eq true)
+                it.username eq username and (it.removeFlag eq persistence)
             }
     }
 
