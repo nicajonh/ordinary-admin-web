@@ -3,7 +3,9 @@
  */
 package com.llh.server.dao
 
+import com.llh.server.dao.SysDepts.bindTo
 import com.llh.server.model.SysDept
+import com.llh.server.model.SysRole
 import com.llh.server.model.SysUser
 import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int
@@ -30,4 +32,13 @@ object SysDepts : BasicDao<SysDept>("sys_dept") {
     val parentId by varchar("parent_id").bindTo { it.parentId }
     val deptName by varchar("dept_name").bindTo { it.deptName }
     val orderNum by int("order_num").bindTo { it.orderNum }
+}
+
+/**
+ * 角色信息DAO层
+ */
+object SysRoles : BasicDao<SysRole>("sys_role") {
+    val orderNum by int("order_num").bindTo { it.orderNum }
+    val roleName by varchar("role_name").bindTo { it.roleName }
+    val remark by varchar("remark").bindTo { it.remark }
 }

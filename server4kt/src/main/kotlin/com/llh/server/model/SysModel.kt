@@ -52,3 +52,25 @@ interface SysDept : BasicModel<SysDept> {
     var children: MutableList<SysDept>
 
 }
+
+/**
+ * 角色信息
+ */
+interface SysRole : BasicModel<SysRole> {
+
+    /**
+     * 显示顺序 order_num
+     */
+    var orderNum: Int
+
+    /**
+     * 角色名称 role_name
+     */
+    var roleName: String
+
+    /**
+     * 备注
+     */
+    var remark: String
+
+}
