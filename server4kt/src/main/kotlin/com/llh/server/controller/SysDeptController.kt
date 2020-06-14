@@ -44,7 +44,8 @@ class SysDeptController {
     @DeleteMapping("delete/{deptId}")
     @ApiOperation("根据部门id移除部门信息。")
     fun removeById(@PathVariable("deptId") entityId: String): JsonWrapper {
-        TODO("not implemented")
+        val removed = sysDeptService.remove(id = entityId)
+        return okResponse(removed)
     }
 
     @PostMapping
@@ -52,6 +53,13 @@ class SysDeptController {
     fun addEntity(@RequestBody infoVO: DeptInfoVO): JsonWrapper {
         val saved = sysDeptService.saveByVO(infoVO)
         return okResponse(saved)
+    }
+
+    @PutMapping("update")
+    @ApiOperation("更新部门信息。")
+    fun update(@RequestBody infoVO: DeptInfoVO): JsonWrapper {
+        val updated: Boolean = sysDeptService.updateByVO(infoVO)
+        return okResponse(updated)
     }
 
     @GetMapping("tree")

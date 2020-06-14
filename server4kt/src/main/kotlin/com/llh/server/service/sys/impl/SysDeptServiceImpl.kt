@@ -16,6 +16,7 @@ import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import kotlin.math.log
 
 /**
  * SysDeptServiceImpl
@@ -50,7 +51,21 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
         val model = findById(entity.id) ?: return false
         model.copyProperties(entity)
         model.updatedAt = getNow()
+        model.updatedBy = currentUserId()
         return model.flushChanges() > 0
+    }
+
+    override fun updateByVO(infoVO: DeptInfoVO): Boolean {
+        if (infoVO.id.isNullOrBlank()) {
+            logger.debug("value of id is null .InfoVo is $infoVO")
+            return false
+        }
+        val entity = SysDept()
+        entity.id = infoVO.id
+        entity.parentId = infoVO.parentId
+        entity.deptName = infoVO.deptName
+        entity.orderNum = infoVO.orderNum
+        return updateById(entity)
     }
 
     override fun findById(id: String): SysDept? {

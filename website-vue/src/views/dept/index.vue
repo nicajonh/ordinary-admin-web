@@ -2,6 +2,8 @@
     <div>
         <el-card>
             <el-row :gutter="15">
+                <!-- 搜索功能需要考虑下 -->
+                <!-- 
                 <el-col :span="6" :xl="4">
                     <el-input
                         placeholder="请输入部门名称"
@@ -14,6 +16,7 @@
                         ></el-button>
                     </el-input>
                 </el-col>
+                 -->
                 <el-col :span="2">
                     <el-button
                         type="primary"
@@ -49,9 +52,20 @@
                             type="primary"
                             icon="el-icon-edit"
                             size="mini"
-                            
+                            circle
                             @click="showEditDialog(scope.row)"
                         ></el-button>
+                        <!-- 删除功能还需要考虑下 -->
+                        <!-- 
+                        <el-button
+                            v-if="!scope.row.children"
+                            type="danger"
+                            icon="el-icon-delete"
+                            circle
+                            size="mini"
+                            @click="removeCurrentRow(scope.row.id)"
+                        ></el-button>
+                         -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -72,7 +86,7 @@
     </div>
 </template>
 <script>
-import { pageList, addModel, getTreeInfo } from '@/api/dept'
+import { pageList, addModel, getTreeInfo, removeEntityById } from '@/api/dept'
 import { Message } from 'element-ui'
 import AddDeptDialog from './Add'
 import EditDeptDialog from './Edit'
@@ -107,6 +121,35 @@ export default {
         }
     },
     methods: {
+        removeCurrentRow(rowId) {
+            this.$confirm('此操作将删除此条数据，是否继续？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+                .then(() => {
+                    removeEntityById(rowId).then(resp => {
+                        if (resp.data) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                             this.fetchDeptTree()
+                        } else {
+                            this.$message({
+                                type: 'info',
+                                message: '删除失败'
+                            })
+                        }
+                    })
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
+        },
         showEditDialog(editModel) {
             this.editModel = editModel
             this.editDeptDialogVisiable = true

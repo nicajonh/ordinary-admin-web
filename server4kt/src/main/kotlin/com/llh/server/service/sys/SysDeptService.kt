@@ -29,4 +29,9 @@ interface SysDeptService : BasicService<SysDept> {
      */
     fun takeTreeInfo(): SysDept
 
+    /**
+     * 更新
+     */
+    fun updateByVO(infoVO: DeptInfoVO): Boolean
+
 }
