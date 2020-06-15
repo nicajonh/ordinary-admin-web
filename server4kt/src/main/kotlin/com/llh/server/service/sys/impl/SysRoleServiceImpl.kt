@@ -3,12 +3,12 @@ package com.llh.server.service.sys.impl
 import com.llh.server.dao.SysRoles
 import com.llh.server.model.SysRole
 import com.llh.server.model.copyProperties
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysRoleService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
@@ -60,5 +60,28 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
         if (find == null)
             logger.warn("not find SysRole(id:${id}) info")
         return find
+    }
+
+    override fun page(pageQueryVO: SimplePageQueryVO<SysRole>): PageDTO<SysRole> {
+        var total = 0
+        val model = pageQueryVO.model
+        val query = database.from(SysRoles)
+            .select(SysRoles.columns)
+            .whereWithConditions {
+                if (!model?.roleName.isNullOrBlank()) {
+                    it += SysRoles.roleName like "%${model?.roleName}%"
+                }
+                it += SysRoles.removeFlag eq persistence
+            }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
+            .orderBy(SysRoles.orderNum.asc())
+            .map { row ->
+                total = row.query.totalRecords
+                SysRoles.createEntity(row)
+            }
+        return PageDTO(
+            content = query,
+            totalElements = total,
+            pageSize = pageQueryVO.pageSize
+        )
     }
 }

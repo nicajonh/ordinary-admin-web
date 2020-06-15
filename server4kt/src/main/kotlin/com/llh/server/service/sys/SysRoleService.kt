@@ -1,6 +1,8 @@
 package com.llh.server.service.sys
 
 import com.llh.server.model.SysRole
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.service.BasicService
 
 /**
@@ -11,4 +13,5 @@ import com.llh.server.service.BasicService
  * @author llh
  */
 interface SysRoleService : BasicService<SysRole> {
+    fun page(pageQueryVO: SimplePageQueryVO<SysRole>): PageDTO<SysRole>
 }
