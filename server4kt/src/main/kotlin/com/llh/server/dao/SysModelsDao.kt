@@ -41,4 +41,5 @@ object SysRoles : BasicDao<SysRole>("sys_role") {
     val orderNum by int("order_num").bindTo { it.orderNum }
     val roleName by varchar("role_name").bindTo { it.roleName }
     val remark by varchar("remark").bindTo { it.remark }
+    val dataScope by int("data_scope").bindTo { it.dataScope }
 }

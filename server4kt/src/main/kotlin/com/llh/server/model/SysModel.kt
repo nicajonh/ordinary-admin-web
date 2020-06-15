@@ -73,4 +73,9 @@ interface SysRole : BasicModel<SysRole> {
      */
     var remark: String
 
+    /**
+     * data_scope
+     * 数据范围（0： 本部门数据权限; 1：本部门及其子部门数据权限; 2：全部数据权限）
+     */
+    var dataScope: Int
 }
