@@ -57,6 +57,7 @@ interface SysDept : BasicModel<SysDept> {
  * 角色信息
  */
 interface SysRole : BasicModel<SysRole> {
+    companion object : Entity.Factory<SysRole>()
 
     /**
      * 显示顺序 order_num

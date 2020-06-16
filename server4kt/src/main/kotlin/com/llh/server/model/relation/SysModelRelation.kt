@@ -10,6 +10,8 @@ import me.liuwj.ktorm.entity.Entity
  * @author llh
  */
 interface RolePermRelation : Entity<RolePermRelation> {
+    companion object : Entity.Factory<RolePermRelation>()
+
     var id: String
 
     /**
@@ -28,6 +30,8 @@ interface RolePermRelation : Entity<RolePermRelation> {
  * 用户和角色的关联表
  */
 interface UserRoleRelation : Entity<UserRoleRelation> {
+    companion object : Entity.Factory<UserRoleRelation>()
+
     var id: String
 
     /**
