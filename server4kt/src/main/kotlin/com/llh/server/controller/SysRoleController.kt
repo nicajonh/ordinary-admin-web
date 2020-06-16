@@ -4,6 +4,7 @@ import com.llh.server.model.SysRole
 import com.llh.server.pojo.JsonWrapper
 import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.okResponse
+import com.llh.server.pojo.vo.RoleInfoVO
 import com.llh.server.service.sys.SysRoleService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -41,9 +42,16 @@ class SysRoleController {
     }
 
     @PostMapping("list")
-    @ApiOperation("获取部门列表，并以分页的形式返回。")
+    @ApiOperation("获取角色列表，并以分页的形式返回。")
     fun page(@RequestBody pageQueryVO: SimplePageQueryVO<SysRole>): JsonWrapper {
         val page = sysRoleService.page(pageQueryVO)
         return okResponse(page)
+    }
+
+    @PostMapping
+    @ApiOperation("新增一个角色列表。")
+    fun addModel(@RequestBody roleInfoVO: RoleInfoVO): JsonWrapper {
+        val saved: Boolean = sysRoleService.saveByVO(roleInfoVO)
+        return okResponse(saved)
     }
 }

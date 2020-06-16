@@ -5,6 +5,7 @@ import com.llh.server.model.SysRole
 import com.llh.server.model.copyProperties
 import com.llh.server.pojo.PageDTO
 import com.llh.server.pojo.SimplePageQueryVO
+import com.llh.server.pojo.vo.RoleInfoVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysRoleService
 import me.liuwj.ktorm.database.Database
@@ -60,6 +61,16 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
         if (find == null)
             logger.warn("not find SysRole(id:${id}) info")
         return find
+    }
+
+    override fun saveByVO(roleInfoVO: RoleInfoVO): Boolean {
+        val role = SysRole()
+        role.roleName = roleInfoVO.roleName
+        role.dataScope = roleInfoVO.dataScope
+        role.orderNum = roleInfoVO.orderNum
+        role.remark = roleInfoVO.remark
+        save(role)
+        return role.id.isNotEmpty()
     }
 
     override fun page(pageQueryVO: SimplePageQueryVO<SysRole>): PageDTO<SysRole> {
