@@ -3,11 +3,9 @@
  */
 package com.llh.server.dao
 
-import com.llh.server.dao.SysDepts.bindTo
 import com.llh.server.model.SysDept
 import com.llh.server.model.SysRole
 import com.llh.server.model.SysUser
-import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.varchar
 
