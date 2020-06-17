@@ -48,7 +48,7 @@ class SnowFlake(datacenterId: Long, machineId: Long) {
     }
 
     private val nextMill: Long
-        private get() {
+        get() {
             var mill = newstmp
             while (mill <= lastStmp) {
                 mill = newstmp
@@ -57,7 +57,7 @@ class SnowFlake(datacenterId: Long, machineId: Long) {
         }
 
     private val newstmp: Long
-        private get() = System.currentTimeMillis()
+        get() = System.currentTimeMillis()
 
     companion object {
         /**
