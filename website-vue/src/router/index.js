@@ -22,7 +22,8 @@ const routes = [
                 component: () => import('@/views/Welcome.vue')
             },
             { path: '/user', component: () => import('@/views/user') },
-            { path: '/dept', component: () => import('@/views/dept') }
+            { path: '/dept', component: () => import('@/views/dept') },
+            { path: '/role', component: () => import('@/views/role') }
         ]
     },
 

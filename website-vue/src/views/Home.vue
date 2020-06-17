@@ -49,9 +49,9 @@
                         <i class="el-icon-document"></i>
                         <span slot="title">部门管理</span>
                     </el-menu-item>
-                    <el-menu-item index="4">
-                        <i class="el-icon-setting"></i>
-                        <span slot="title">导航四</span>
+                    <el-menu-item index="/role" @click="saveActivePath('/role')">
+                        <i class="el-icon-s-custom"></i>
+                        <span slot="title">角色管理</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>
