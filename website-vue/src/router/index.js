@@ -23,7 +23,8 @@ const routes = [
             },
             { path: '/user', component: () => import('@/views/user') },
             { path: '/dept', component: () => import('@/views/dept') },
-            { path: '/role', component: () => import('@/views/role') }
+            { path: '/role', component: () => import('@/views/role') },
+            { path: '/permission', component: () => import('@/views/permission') }
         ]
     },
 

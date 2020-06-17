@@ -53,6 +53,10 @@
                         <i class="el-icon-s-custom"></i>
                         <span slot="title">角色管理</span>
                     </el-menu-item>
+                    <el-menu-item index="/permission" @click="saveActivePath('/permission')">
+                        <i class="el-icon-s-custom"></i>
+                        <span slot="title">权限管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
