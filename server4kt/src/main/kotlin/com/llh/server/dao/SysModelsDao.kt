@@ -4,6 +4,7 @@
 package com.llh.server.dao
 
 import com.llh.server.model.SysDept
+import com.llh.server.model.SysPermission
 import com.llh.server.model.SysRole
 import com.llh.server.model.SysUser
 import me.liuwj.ktorm.schema.int
@@ -40,4 +41,14 @@ object SysRoles : BasicDao<SysRole>("sys_role") {
     val roleName by varchar("role_name").bindTo { it.roleName }
     val remark by varchar("remark").bindTo { it.remark }
     val dataScope by int("data_scope").bindTo { it.dataScope }
+}
+
+/**
+ * 权限信息DAO层
+ */
+object SysPermissions : BasicDao<SysPermission>("sys_permission") {
+    val orderNum by int("order_num").bindTo { it.orderNum }
+    val permName by varchar("perm_name").bindTo { it.permName }
+    val remark by varchar("remark").bindTo { it.remark }
+    val parentId by varchar("parent_id").bindTo { it.parentId }
 }

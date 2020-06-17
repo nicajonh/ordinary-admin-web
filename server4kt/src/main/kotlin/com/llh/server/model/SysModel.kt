@@ -80,3 +80,31 @@ interface SysRole : BasicModel<SysRole> {
      */
     var dataScope: Int
 }
+
+/**
+ * 权限信息
+ */
+interface SysPermission : BasicModel<SysPermission> {
+    companion object : Entity.Factory<SysPermission>()
+
+    /**
+     * 权限名称 perm_name
+     * 暂定格式为：`模块名:动作`
+     */
+    var permName: String
+
+    /**
+     * 显示顺序 order_num
+     */
+    var orderNum: Int
+
+    /**
+     * 备注
+     */
+    var remark: String
+
+    /**
+     * 父id parent_id
+     */
+    var parentId: String?
+}
