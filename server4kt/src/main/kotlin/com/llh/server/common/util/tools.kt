@@ -9,5 +9,5 @@ package com.llh.server.common.util
 
 
 fun uuidStr(): String {
-    return "${SnowFlake(2, 3).nextId()}"
+    return "${SnowFlake4kt.nextId()}"
 }
