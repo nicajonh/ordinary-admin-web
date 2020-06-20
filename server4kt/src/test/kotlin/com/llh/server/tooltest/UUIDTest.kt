@@ -31,21 +31,6 @@ class UUIDTest {
         println(set.size)
     }
 
-    @Test
-    fun testAdd() {
-        Fuck.add()
-        Fuck.add()
-        Fuck.printCount()
-    }
 }
 
-object Fuck {
-    private var count = 1
-    fun add() {
-        count++
-    }
 
-    fun printCount() {
-        println(this.count)
-    }
-}
