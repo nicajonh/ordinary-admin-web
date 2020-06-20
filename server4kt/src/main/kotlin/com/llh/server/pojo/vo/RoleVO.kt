@@ -14,4 +14,5 @@ data class RoleInfoVO(
     , val remark: String
     , val dataScope: Int
     , val id: String?
+    , val permIds: MutableSet<String>?
 )

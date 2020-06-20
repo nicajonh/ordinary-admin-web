@@ -3,6 +3,7 @@
  */
 package com.llh.server.model
 
+import com.llh.server.pojo.vo.RoleInfoVO
 import me.liuwj.ktorm.entity.Entity
 
 /**
@@ -79,6 +80,18 @@ interface SysRole : BasicModel<SysRole> {
      * 数据范围（0： 本部门数据权限; 1：本部门及其子部门数据权限; 2：全部数据权限）
      */
     var dataScope: Int
+
+    fun convert2Entity(infoVO: RoleInfoVO): SysRole {
+
+        if (!infoVO.id.isNullOrBlank()) {
+            this.id = infoVO.id
+        }
+        this.roleName = infoVO.roleName
+        this.dataScope = infoVO.dataScope
+        this.orderNum = infoVO.orderNum
+        this.remark = infoVO.remark
+        return this
+    }
 }
 
 /**

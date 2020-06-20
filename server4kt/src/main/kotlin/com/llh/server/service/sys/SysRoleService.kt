@@ -20,4 +20,9 @@ interface SysRoleService : BasicService<SysRole> {
      * 通过[roleInfoVO]VO类来保存角色信息。
      */
     fun saveByVO(roleInfoVO: RoleInfoVO): Boolean
+
+    /**
+     * 通过[infoVO]VO类来更新角色信息及其关联的权限信息。
+     */
+    fun updateByVO(infoVO: RoleInfoVO): Boolean
 }

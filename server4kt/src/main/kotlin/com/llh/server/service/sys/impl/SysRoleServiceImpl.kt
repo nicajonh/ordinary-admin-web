@@ -1,20 +1,26 @@
 package com.llh.server.service.sys.impl
 
+import com.llh.server.common.util.uuidStr
 import com.llh.server.dao.SysRoles
+import com.llh.server.dao.relation.RolePermRelations
 import com.llh.server.model.SysRole
 import com.llh.server.model.copyProperties
+import com.llh.server.model.relation.RolePermRelation
 import com.llh.server.pojo.PageDTO
 import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.vo.RoleInfoVO
 import com.llh.server.service.ServiceHelper
+import com.llh.server.service.sys.SysPermissionService
 import com.llh.server.service.sys.SysRoleService
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
+import me.liuwj.ktorm.entity.removeIf
 import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 /**
@@ -28,6 +34,10 @@ import org.springframework.stereotype.Service
 class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
     @Autowired
     private lateinit var database: Database
+
+    @Autowired
+    @Qualifier("sysPermissionService")
+    private lateinit var sysPermissionService: SysPermissionService
 
     override fun save(entity: SysRole): SysRole {
         initValueForModelToDB(entity)
@@ -65,12 +75,20 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
 
     override fun saveByVO(roleInfoVO: RoleInfoVO): Boolean {
         val role = SysRole()
+        // TODO 使用新方案来完成
         role.roleName = roleInfoVO.roleName
         role.dataScope = roleInfoVO.dataScope
         role.orderNum = roleInfoVO.orderNum
         role.remark = roleInfoVO.remark
         save(role)
+        saveRolePermRelation(role.id, roleInfoVO.permIds)
         return role.id.isNotEmpty()
+    }
+
+    override fun updateByVO(infoVO: RoleInfoVO): Boolean {
+        val entity = SysRole().convert2Entity(infoVO)
+        updateById(entity)
+        return false
     }
 
     override fun page(pageQueryVO: SimplePageQueryVO<SysRole>): PageDTO<SysRole> {
@@ -94,5 +112,71 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
             totalElements = total,
             pageSize = pageQueryVO.pageSize
         )
+    }
+
+    // ------------------------- private fun -----------------------------------
+
+    /**
+     * 保存角色与权限之间的关系
+     */
+    private fun saveRolePermRelation(roleId: String, permIds: MutableSet<String>?): Boolean {
+        if (permIds.isNullOrEmpty()) {
+            logger.debug("新增角色(id:$roleId)时，未设定其拥有的权限。")
+            return false
+        }
+        //------------ 1. 建立关联表对象 ----------------
+        val toSave: MutableList<RolePermRelation> = mutableListOf()
+        for (id in permIds) {
+            val rp = RolePermRelation()
+            rp.id = uuidStr()
+            rp.permId = id
+            rp.roleId = roleId
+            toSave.add(RolePermRelation())
+        }
+        //------------ 2. 批量插入 ----------------
+        return batchInsert4RolePerm(toSave) > 0
+    }
+
+
+    private fun updateRolePermRelation(roleId: String, permIds: MutableSet<String>?): Boolean {
+        permIds ?: return false
+        // 1. 处理已存在的关系
+        val savedRelation = database.from(RolePermRelations)
+            .select(RolePermRelations.id)
+            .where { RolePermRelations.roleId eq roleId }
+            .map { row -> RolePermRelations.createEntity(row) }
+
+        if (savedRelation.map { it.permId }.containsAll(permIds))
+            return false
+
+
+        return false
+    }
+
+    /**
+     * 处理角色与权限的关联表。
+     */
+    private fun batchInsert4RolePerm(rolePermList: MutableList<RolePermRelation>): Int {
+        if (rolePermList.isEmpty()) return 0
+        // 单条插入。
+        if (rolePermList.size == 1) {
+            return database.sequenceOf(RolePermRelations).add(rolePermList[0])
+        }
+        //批量插入。参考：https://ktorm.liuwj.me/zh-cn/dml.html#%E6%8F%92%E5%85%A5
+        val inserted = database.batchInsert(RolePermRelations) {
+            for (rp in rolePermList) {
+                item {
+                    it.id to rp.id
+                    it.roleId to rp.roleId
+                    it.permId to rp.permId
+                }
+            }
+        }
+        val totalInserted = inserted.sum()
+        if (totalInserted < rolePermList.size)
+            logger.warn("保存角色关联权限信息数量小于传入数量。" +
+                "已保存：$totalInserted 条，应当保存：${rolePermList.size} 条。" +
+                "插入详情结果：$inserted")
+        return totalInserted
     }
 }

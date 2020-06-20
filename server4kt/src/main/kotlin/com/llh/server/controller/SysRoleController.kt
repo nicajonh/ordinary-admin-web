@@ -49,7 +49,7 @@ class SysRoleController {
     }
 
     @PostMapping
-    @ApiOperation("新增一个角色列表。")
+    @ApiOperation("新增一个角色信息。")
     fun addModel(@RequestBody roleInfoVO: RoleInfoVO): JsonWrapper {
         val saved: Boolean = sysRoleService.saveByVO(roleInfoVO)
         return okResponse(saved)
