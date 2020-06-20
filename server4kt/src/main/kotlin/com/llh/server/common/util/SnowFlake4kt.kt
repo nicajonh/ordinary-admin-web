@@ -2,7 +2,9 @@ package com.llh.server.common.util
 
 /**
  * SnowFlake4kt 雪花算法
- *
+ * 网上流传甚广的分布式id生成算法。
+ * 直接把网上Java实现版本用idea转换工具转换为kotlin并不能用，
+ * 所以自己手动转换了。
  * CreatedAt: 2020-06-21 00:11
  *
  * @author llh
