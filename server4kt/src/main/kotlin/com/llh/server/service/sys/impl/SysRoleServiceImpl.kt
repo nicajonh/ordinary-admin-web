@@ -168,6 +168,7 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
     private fun addRolePermRelation(permIds: MutableSet<String>, roleId: String): Boolean {
         val toSavedList = mutableListOf<RolePermRelation>()
         for (id in permIds) { // 这里不能用forEach。uuidStr()生成id速度好像跟不上。
+            if (id.isEmpty()) continue
             val rp = RolePermRelation()
             rp.id = uuidStr()
             rp.permId = id

@@ -26,6 +26,17 @@
                 <el-form-item label="备注" prop="roleName">
                     <el-input v-model="addForm.remark"></el-input>
                 </el-form-item>
+                <el-form-item>
+                    <el-tree
+                        :data="treeData"
+                        show-checkbox
+                        node-key="id"
+                        ref="tree"
+                        @check="clickTreeNode"
+                        highlight-current
+                        :props="treeProps"
+                    ></el-tree>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addFormClosed()">取 消</el-button>
@@ -39,6 +50,7 @@
 
 <script>
 import { addModel } from '@/api/role'
+import { fetchTreeData } from '@/api/permission'
 export default {
     name: 'AddRoleDialog',
     props: {
@@ -52,9 +64,16 @@ export default {
         return {
             addForm: {
                 remark: '',
-                orderNum: 0
+                roleName: '',
+                orderNum: 0,
+                permIds: []
             },
-            addFormRules: {}
+            addFormRules: {},
+            treeData: [],
+            treeProps: {
+                children: 'children',
+                label: 'permName'
+            }
         }
     },
 
@@ -66,6 +85,7 @@ export default {
                     if (resp.data) {
                         this.$message('添加成功！')
                         this.addFormClosed(true)
+                        // this.addForm.permIds = []
                     }
                 })
             })
@@ -74,7 +94,29 @@ export default {
             // 初始化数据
             this.$refs['addFormRef'].resetFields()
             this.$emit('closeDialog', refresh)
+            this.addForm = {
+                remark: '',
+                roleName: '',
+                orderNum: 0,
+                permIds: []
+            }
+            this.$refs.tree.setChecked()
+        },
+        getTreeData() {
+            fetchTreeData().then(resp => {
+                if (resp.data) {
+                    this.treeData.push(resp.data)
+                }
+            })
+        },
+        clickTreeNode() {
+            this.addForm.permIds = []
+            let selectedNodes = this.$refs.tree.getCheckedKeys()
+            this.addForm.permIds = selectedNodes
         }
+    },
+    created() {
+        this.getTreeData()
     }
 }
 </script>

@@ -1,6 +1,8 @@
 package com.llh.server.service.sys
 
 import com.llh.server.model.SysPermission
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.vo.PermissionInfoVO
 import com.llh.server.service.BasicService
 
@@ -13,4 +15,6 @@ import com.llh.server.service.BasicService
  */
 interface SysPermissionService : BasicService<SysPermission> {
     fun saveByVO(infoVO: PermissionInfoVO): Boolean
+    fun page(pageQueryVO: SimplePageQueryVO<SysPermission>): PageDTO<SysPermission>
+    fun treeData(): SysPermission
 }

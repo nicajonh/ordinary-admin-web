@@ -120,4 +120,10 @@ interface SysPermission : BasicModel<SysPermission> {
      * 父id parent_id
      */
     var parentId: String?
+
+    /**
+     * 子数据。
+     * 不要与数据库数据进行映射
+     */
+    var children: MutableList<SysPermission>
 }

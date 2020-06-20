@@ -3,13 +3,13 @@ package com.llh.server.service.sys.impl
 import com.llh.server.dao.SysPermissions
 import com.llh.server.model.SysPermission
 import com.llh.server.model.copyProperties
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.vo.PermissionInfoVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysPermissionService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
@@ -70,5 +70,53 @@ class SysPermissionServiceImpl : ServiceHelper<SysPermission>(), SysPermissionSe
         permission.remark = infoVO.remark
         save(permission)
         return permission.id.isNotEmpty()
+    }
+
+    override fun page(pageQueryVO: SimplePageQueryVO<SysPermission>): PageDTO<SysPermission> {
+        var total = 0
+        val model = pageQueryVO.model
+        val query = database.from(SysPermissions)
+            .select(SysPermissions.columns)
+            .whereWithConditions {
+                if (!model?.permName.isNullOrBlank()) {
+                    it += SysPermissions.permName like "%${model?.permName}%"
+                }
+                it += SysPermissions.removeFlag eq persistence
+            }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
+            .orderBy(SysPermissions.orderNum.asc())
+            .map { row ->
+                total = row.query.totalRecords
+                SysPermissions.createEntity(row)
+            }
+        return PageDTO(
+            content = query,
+            totalElements = total,
+            pageSize = pageQueryVO.pageSize
+        )
+    }
+
+    override fun treeData(): SysPermission {
+        val list = database.from(SysPermissions)
+            .select(SysPermissions.columns)
+            .where { SysPermissions.removeFlag eq persistence }
+            .map { row -> SysPermissions.createEntity(row) }
+        return genTreeData(list)
+    }
+
+    // ----------------- private fun  ------------------
+
+    private fun genTreeData(list: List<SysPermission>): SysPermission {
+        val root = SysPermission()
+        root.permName = "权限树"
+        root.id = ""
+        val treeMap = mutableMapOf<String?, SysPermission>()
+        treeMap[null] = root
+        for (ele in list) {
+            if (treeMap.containsKey(ele.parentId)) {
+                treeMap[ele.parentId]?.children?.add(ele)
+            }
+            treeMap[ele.id] = ele
+        }
+        return root
     }
 }

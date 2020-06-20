@@ -29,6 +29,7 @@ class SnowFlake(datacenterId: Long, machineId: Long) {
             throw RuntimeException("Clock moved backwards.  Refusing to generate id")
         }
         if (currStmp == lastStmp) {
+            println("???")
             //相同毫秒内，序列号自增
             sequence = sequence + 1 and MAX_SEQUENCE
             //同一毫秒的序列数已经达到最大
@@ -39,6 +40,7 @@ class SnowFlake(datacenterId: Long, machineId: Long) {
             //不同毫秒内，序列号置为0
             sequence = 0L
         }
+        println("currStmp: $currStmp  sequence: $sequence lastStmp:$lastStmp TIMESTMP_LEFT: $TIMESTMP_LEFT")
         lastStmp = currStmp
         //时间戳部分
         return currStmp - START_STMP shl TIMESTMP_LEFT.toInt() or (
