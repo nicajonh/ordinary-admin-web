@@ -54,4 +54,11 @@ class SysRoleController {
         val saved: Boolean = sysRoleService.saveByVO(roleInfoVO)
         return okResponse(saved)
     }
+
+    @PutMapping("update")
+    @ApiOperation("修改角色信息。")
+    fun updateModel(@RequestBody roleInfoVO: RoleInfoVO): JsonWrapper {
+        val updated: Boolean = sysRoleService.updateByVO(roleInfoVO)
+        return okResponse(updated)
+    }
 }

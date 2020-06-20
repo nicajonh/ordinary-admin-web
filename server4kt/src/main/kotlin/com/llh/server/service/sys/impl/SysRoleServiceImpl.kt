@@ -74,12 +74,7 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
     }
 
     override fun saveByVO(roleInfoVO: RoleInfoVO): Boolean {
-        val role = SysRole()
-        // TODO 使用新方案来完成
-        role.roleName = roleInfoVO.roleName
-        role.dataScope = roleInfoVO.dataScope
-        role.orderNum = roleInfoVO.orderNum
-        role.remark = roleInfoVO.remark
+        val role = SysRole().convert2Entity(roleInfoVO)
         save(role)
         val saved = saveRolePermRelation(role.id, roleInfoVO.permIds)
         logger.debug("saved ? $saved")
@@ -126,17 +121,7 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
             logger.debug("新增角色(id:$roleId)时，未设定其拥有的权限。")
             return false
         }
-        //------------ 1. 建立关联表对象 ----------------
-        val toSave: MutableList<RolePermRelation> = mutableListOf()
-        for (id in permIds) {
-            val rp = RolePermRelation()
-            rp.id = uuidStr()
-            rp.permId = id
-            rp.roleId = roleId
-            toSave.add(rp)
-        }
-        //------------ 2. 批量插入 ----------------
-        return batchInsert4RolePerm(toSave) > 0
+        return addRolePermRelation(permIds, roleId)
     }
 
 
@@ -144,7 +129,16 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
      * 更新角色与权限之间的关系
      */
     private fun updateRolePermRelation(roleId: String, permIds: MutableSet<String>?): Boolean {
-        permIds ?: return false
+        if (permIds.isNullOrEmpty()) {
+            // 删除已存在的关系
+            val deleted = database.delete(RolePermRelations) {
+                it.roleId eq roleId
+            }
+            logger.info("传入权限关系为空，将删除角色（$roleId）相关的所有权限关系。已删除关系数据 $deleted 条。")
+            return deleted > 0
+
+        }
+
         // 查找已存在的关系
         val savedRelation = database.from(RolePermRelations)
             .select(RolePermRelations.id)
@@ -163,11 +157,15 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
         }
         logger.debug("角色（$roleId） 已删除 $deleted 条关系数据。")
         // 保存新的关系
+        return addRolePermRelation(permIds, roleId)
+    }
+
+    private fun addRolePermRelation(permIds: MutableSet<String>, roleId: String): Boolean {
         val toSavedList = mutableListOf<RolePermRelation>()
-        permIds.forEach {
+        for (id in permIds) { // 这里不能用forEach。uuidStr()生成id速度好像跟不上。
             val rp = RolePermRelation()
             rp.id = uuidStr()
-            rp.permId = it
+            rp.permId = id
             rp.roleId = roleId
             toSavedList.add(rp)
         }
