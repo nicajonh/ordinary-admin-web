@@ -53,6 +53,11 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
                 it.id eq id
             }
         }
+        // 删除已存在的关系
+        val deleted = database.delete(RolePermRelations) {
+            it.roleId eq id
+        }
+        logger.debug("删除角色（$id） $deleted 条权限信息。")
         return updated > 0
     }
 
