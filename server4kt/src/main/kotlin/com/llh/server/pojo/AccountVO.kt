@@ -66,5 +66,6 @@ data class RegisterOrUpdateVO(
     val newPassword: String?,
     val id: String?,
     val email: String,
-    val accountStatus: Int?
+    val accountStatus: Int?,
+    val roleIds: MutableSet<String>? // 对应角色id
 )

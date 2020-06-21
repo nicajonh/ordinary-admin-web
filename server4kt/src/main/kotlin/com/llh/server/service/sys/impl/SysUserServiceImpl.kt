@@ -2,8 +2,10 @@ package com.llh.server.service.sys.impl
 
 import com.llh.server.common.util.uuidStr
 import com.llh.server.dao.SysUsers
+import com.llh.server.dao.relation.UserRoleRelations
 import com.llh.server.model.SysUser
 import com.llh.server.model.copyProperties
+import com.llh.server.model.relation.UserRoleRelation
 import com.llh.server.pojo.*
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysUserService
@@ -93,7 +95,8 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
             email = userVO.email
         }
         save(user)
-        return user.id == ""
+        saveUserRoleRelation(user.id, userVO.roleIds)
+        return user.id.isNotEmpty()
     }
 
     override fun updateUser(userVO: RegisterOrUpdateVO): Boolean? {
@@ -109,7 +112,7 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
             user.email = userVO.email
         }
         val changes = user?.flushChanges()
-
+        updateUserRoleRelation(userVO.id, userVO.roleIds)
         return changes?.equals(1)
     }
 
@@ -135,7 +138,7 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
             pageSize = queryVO.pageSize
         )
     }
-
+    // ----------------------- private fun --------------------------
     /**
      * 将用户类转换为帐户类。
      * 默认返回空的帐户类。
@@ -143,5 +146,79 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
     private fun convertAccount(user: SysUser?): AccountVO {
         user ?: return createEmptyAccount()
         return AccountVO(user.username, user.password, user.id)
+    }
+
+    private fun saveUserRoleRelation(userId: String, roleIds: MutableSet<String>?): Boolean {
+        if (roleIds.isNullOrEmpty()) {
+            logger.debug("新增用户(id:$userId)时，未设定其拥有的角色。")
+            return false
+        }
+        return addUserRoleRelation(userId, roleIds)
+    }
+
+    private fun updateUserRoleRelation(userId: String, roleIds: MutableSet<String>?): Boolean {
+        if (roleIds.isNullOrEmpty()) {
+            val deleted = database.delete(UserRoleRelations) {
+                it.userId eq userId
+            }
+            logger.info("传入角色关系为空，将删除用户（$userId）相关的所有角色关系。已删除关系数据 $deleted 条。")
+            return deleted > 0
+        }
+        // 查找已存在的关系
+        val saveRelation = database.from(UserRoleRelations)
+            .select(UserRoleRelations.columns)
+            .where { UserRoleRelations.userId eq userId }
+            .map { row -> UserRoleRelations.createEntity(row) }
+        val deletedIds = saveRelation.map { it.roleId }
+        if (deletedIds.containsAll(roleIds)) {
+            logger.info("用户（$userId）已保存和传入的权限关系相同。")
+            return false
+        }
+        // 删除已存在的关系
+        val deleted = database.delete(UserRoleRelations) {
+            it.roleId inList roleIds
+            it.userId eq userId
+        }
+        logger.debug("用户（$userId） 已删除 $deleted 条角色关系数据。")
+        // 保存新的关系
+        return addUserRoleRelation(userId, roleIds)
+    }
+
+    private fun addUserRoleRelation(userId: String, roleIds: MutableSet<String>): Boolean {
+        val toSaveList = mutableListOf<UserRoleRelation>()
+        roleIds.forEach {
+            val ur = UserRoleRelation()
+            ur.id = uuidStr()
+            ur.roleId = it
+            ur.userId = userId
+            toSaveList.add(ur)
+        }
+        return batchInsert4UserRole(toSaveList) > 0
+    }
+
+    /**
+     * 处理用户与角色的关联表。
+     */
+    private fun batchInsert4UserRole(userRoleList: MutableList<UserRoleRelation>): Int {
+        if (userRoleList.isEmpty()) return 0
+        if (userRoleList.size == 1) {
+            return database.sequenceOf(UserRoleRelations)
+                .add(userRoleList[0])
+        }
+        val inserted = database.batchInsert(UserRoleRelations) {
+            for (r in userRoleList) {
+                item {
+                    it.id to r.id
+                    it.roleId to r.roleId
+                    it.userId to r.userId
+                }
+            }
+        }
+        val totalInserted = inserted.sum()
+        if (totalInserted < userRoleList.size)
+            logger.warn("保存用户关联角色信息数量小于传入数量。" +
+                "已保存：$totalInserted 条，应当保存：${userRoleList.size} 条。" +
+                "插入详情结果：$inserted")
+        return totalInserted
     }
 }

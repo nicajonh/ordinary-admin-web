@@ -141,7 +141,6 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
             }
             logger.info("传入权限关系为空，将删除角色（$roleId）相关的所有权限关系。已删除关系数据 $deleted 条。")
             return deleted > 0
-
         }
 
         // 查找已存在的关系
@@ -167,7 +166,7 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
 
     private fun addRolePermRelation(permIds: MutableSet<String>, roleId: String): Boolean {
         val toSavedList = mutableListOf<RolePermRelation>()
-        for (id in permIds) { // 这里不能用forEach。uuidStr()生成id速度好像跟不上。
+        for (id in permIds) {
             if (id.isEmpty()) continue
             val rp = RolePermRelation()
             rp.id = uuidStr()
