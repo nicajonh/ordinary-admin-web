@@ -35,10 +35,6 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
     @Autowired
     private lateinit var database: Database
 
-    @Autowired
-    @Qualifier("sysPermissionService")
-    private lateinit var sysPermissionService: SysPermissionService
-
     override fun save(entity: SysRole): SysRole {
         initValueForModelToDB(entity)
         database.sequenceOf(SysRoles).add(entity)

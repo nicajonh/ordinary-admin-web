@@ -127,3 +127,25 @@ interface SysPermission : BasicModel<SysPermission> {
      */
     var children: MutableList<SysPermission>
 }
+
+interface SysLog : BasicModel<SysLog> {
+    companion object : Entity.Factory<SysLog>()
+
+    /**  处理请求的方法名 method_name */
+    var methodName: String
+
+    /**  请求参数 */
+    var params: String?
+
+    /** 执行时长(毫秒)  time_cost */
+    var timeCost: Long
+
+    /** IP地址  ip */
+    var ip: String?
+
+    /** url */
+    var url: String?
+
+    /** 描述  remark */
+    var remark: String?
+}
