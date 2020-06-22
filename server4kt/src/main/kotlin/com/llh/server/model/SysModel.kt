@@ -149,3 +149,44 @@ interface SysLog : BasicModel<SysLog> {
     /** 描述  remark */
     var remark: String?
 }
+
+/** 字典类型表 sys_dict_type */
+interface SysDictType : BasicModel<SysDictType> {
+    companion object : Entity.Factory<SysDictType>()
+
+    /** 字典名称。给人看的。 dict_name */
+    var dictName: String
+
+    /** 字典类型。写代码时用的。 dict_type */
+    var dictType: String
+
+    /** 是否系统内置。 internal_flag */
+    var internalFlag: Boolean
+
+    /** 描述  remark */
+    var remark: String?
+}
+
+/** 字典数据表 sys_dict_data */
+interface SysDictData : BasicModel<SysDictData> {
+    companion object : Entity.Factory<SysDictData>()
+    /** 字典标签。给人看的。  dict_label */
+    var dictLabel: String
+
+    /** 字典键值。写代码时用的。  dict_value */
+    var dictValue: String
+
+    /** 字典数据所属类型，关联[SysDictType]中的数据。 dict_type */
+    var dictType: String
+
+    /**
+     * 显示顺序 order_num
+     */
+    var orderNum: Int
+
+    /** 是否为默认值 。这个字段暂时不做校验，同类型下设置多个默认值除非是多选，应当只有第一个或最后一个生效。 default_flag */
+    var defaultFlag: Boolean
+
+    /** 描述  remark */
+    var remark: String?
+}

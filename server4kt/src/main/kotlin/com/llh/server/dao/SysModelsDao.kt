@@ -3,7 +3,11 @@
  */
 package com.llh.server.dao
 
+import com.llh.server.dao.SysDictTypes.bindTo
+import com.llh.server.dao.SysLogs.bindTo
+import com.llh.server.dao.SysPermissions.bindTo
 import com.llh.server.model.*
+import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int
 import me.liuwj.ktorm.schema.long
 import me.liuwj.ktorm.schema.varchar
@@ -61,4 +65,22 @@ object SysLogs : BasicDao<SysLog>("sys_log") {
     val ip by varchar("ip").bindTo { it.ip }
     val remark by varchar("remark").bindTo { it.remark }
     val url by varchar("url").bindTo { it.url }
+}
+
+/** 字典类型表DAO层 */
+object SysDictTypes : BasicDao<SysDictType>("sys_dict_type") {
+    val dictName by varchar("dict_name").bindTo { it.dictName }
+    val dictType by varchar("dict_type").bindTo { it.dictType }
+    val internalFlag by boolean("internal_flag").bindTo { it.internalFlag }
+    val remark by varchar("remark").bindTo { it.remark }
+}
+
+/** 字典类型表DAO层 */
+object SysDictDatas : BasicDao<SysDictData>("sys_dict_data") {
+    val remark by varchar("remark").bindTo { it.remark }
+    val orderNum by int("order_num").bindTo { it.orderNum }
+    val dictType by varchar("dict_type").bindTo { it.dictType }
+    val dictValue by varchar("dict_value").bindTo { it.dictValue }
+    val dictLabel by varchar("dict_label").bindTo { it.dictLabel }
+    val defaultFlag by boolean("default_flag").bindTo { it.defaultFlag }
 }
