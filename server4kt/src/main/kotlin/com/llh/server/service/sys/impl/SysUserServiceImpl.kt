@@ -116,6 +116,8 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
         return changes?.equals(1)
     }
 
+    // ----------------------- private fun --------------------------
+
     private fun pageQuery(queryVO: SimplePageQueryVO<SysUser>): PageDTO<SysUser> {
 
         var total = 0
@@ -138,7 +140,7 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
             pageSize = queryVO.pageSize
         )
     }
-    // ----------------------- private fun --------------------------
+
     /**
      * 将用户类转换为帐户类。
      * 默认返回空的帐户类。
