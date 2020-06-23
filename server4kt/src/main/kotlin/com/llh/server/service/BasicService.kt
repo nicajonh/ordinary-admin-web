@@ -42,7 +42,6 @@ interface BasicService<E> {
 /**
  * 服务层辅助类。
  * 提供服务层公共方法。
- * 避免单继承限制使用接口。
  */
 open class ServiceHelper<E : BasicModel<E>> {
     fun getNow(): LocalDateTime = LocalDateTime.now()

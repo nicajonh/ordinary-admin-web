@@ -1,14 +1,15 @@
 package com.llh.server.service.sys.impl
 
+import com.llh.server.dao.SysDepts
 import com.llh.server.dao.SysLogs
 import com.llh.server.model.SysLog
 import com.llh.server.model.copyProperties
+import com.llh.server.pojo.PageDTO
+import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.service.ServiceHelper
 import com.llh.server.service.sys.SysLogService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.dsl.and
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.update
+import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
 import me.liuwj.ktorm.entity.sequenceOf
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service
 class SysLogServiceImpl : ServiceHelper<SysLog>(), SysLogService, Logging {
     @Autowired
     private lateinit var database: Database
+
 
     override fun save(entity: SysLog): SysLog {
         initValueForModelToDB(entity)
@@ -60,5 +62,32 @@ class SysLogServiceImpl : ServiceHelper<SysLog>(), SysLogService, Logging {
         if (find == null)
             logger.warn("not find SysLogs(id:${id}) info")
         return find
+    }
+
+
+    override fun page(queryVO: SimplePageQueryVO<SysLog>): PageDTO<SysLog> {
+        return pageQuery(queryVO)
+    }
+
+    private fun pageQuery(queryVO: SimplePageQueryVO<SysLog>): PageDTO<SysLog> {
+        var total = 0
+        val query = database.from(SysLogs)
+            .select(SysLogs.columns)
+            .whereWithConditions {
+                if (queryVO.model?.methodName?.isNotEmpty() == true) {
+                    it += SysLogs["methodName"] like "%${queryVO.model.methodName}%"
+                }
+                it += SysLogs.removeFlag eq persistence
+            }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
+            .orderBy(SysLogs.updatedAt.desc())
+            .map { row ->
+                total = row.query.totalRecords
+                SysLogs.createEntity(row)
+            }
+        return PageDTO(
+            content = query,
+            totalElements = total,
+            pageSize = queryVO.pageSize
+        )
     }
 }
