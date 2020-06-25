@@ -34,7 +34,7 @@ class SysDictTypeController {
 
     @GetMapping("{dictId}")
     @ApiOperation("根据字典类型id获取字典类型信息。")
-    fun userInfo(@PathVariable("dictId") dictId: String): JsonWrapper {
+    fun info(@PathVariable("dictId") dictId: String): JsonWrapper {
         val user = sysDictTypeService.findById(dictId)
         return okResponse(user)
     }
