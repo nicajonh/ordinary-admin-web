@@ -140,7 +140,7 @@ export default {
                 if (!valid || !this.addForm.id) return
                 updateEntityById(this.addForm).then(resp => {
                     if (resp.data) {
-                        this.$message('添加成功！')
+                        this.$message('修改成功！')
                         this.addFormClosed(true)
                     }
                 })

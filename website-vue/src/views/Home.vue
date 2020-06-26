@@ -57,6 +57,10 @@
                         <i class="el-icon-s-custom"></i>
                         <span slot="title">权限管理</span>
                     </el-menu-item>
+                    <el-menu-item index="/dict" @click="saveActivePath('/dict')">
+                        <i class="el-icon-s-custom"></i>
+                        <span slot="title">字典管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
