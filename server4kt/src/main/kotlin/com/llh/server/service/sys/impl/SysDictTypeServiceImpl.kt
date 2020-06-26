@@ -1,7 +1,6 @@
 package com.llh.server.service.sys.impl
 
 import com.llh.server.dao.SysDictTypes
-import com.llh.server.dao.SysUsers
 import com.llh.server.model.SysDictType
 import com.llh.server.model.copyProperties
 import com.llh.server.pojo.PageDTO
@@ -99,7 +98,7 @@ class SysDictTypeServiceImpl : ServiceHelper<SysDictType>(), SysDictTypeService,
                 if (pageQueryVO.model?.dictName?.isNotBlank() == true) {
                     it += SysDictTypes.dictName like "%${pageQueryVO.model.dictName}%"
                 }
-                it += SysUsers.removeFlag eq persistence
+                it += SysDictTypes.removeFlag eq persistence
             }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
             .orderBy(SysDictTypes.updatedAt.desc())
             .map { row ->

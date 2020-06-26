@@ -1,5 +1,6 @@
 package com.llh.server.controller
 
+import com.llh.server.common.annotation.SysLogAnnotation
 import com.llh.server.model.SysDictType
 import com.llh.server.pojo.*
 import com.llh.server.pojo.vo.DictTypeVO
@@ -55,6 +56,7 @@ class SysDictTypeController {
 
     @PutMapping("update")
     @ApiOperation("更新字典类型信息。")
+    @SysLogAnnotation("更新字典类型信息")
     fun update(@RequestBody dictTypeVO: DictTypeVO): JsonWrapper {
         val updated: Boolean? = sysDictTypeService.updateByVO(dictTypeVO)
         updated ?: return okResponse(false, msg = "更新字典类型信息失败！")
