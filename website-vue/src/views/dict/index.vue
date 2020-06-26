@@ -32,11 +32,17 @@
                     label="字典名称"
                     width="180"
                 ></el-table-column>
-                <el-table-column
-                    prop="dictType"
-                    label="字典类型"
-                    width="180"
-                ></el-table-column>
+                <el-table-column prop="dictType" label="字典类型" width="180">
+                    <template v-slot="scope">
+                        <router-link
+                            :to="{
+                                path: '/dict-data/' + scope.row.dictType
+                            }"
+                        >
+                            {{ scope.row.dictType }}
+                        </router-link>
+                    </template>
+                </el-table-column>
                 <el-table-column label="是否系统内置" width="180">
                     <template v-slot="scope">
                         <el-tag v-if="scope.row.internalFlag" type="success">
@@ -59,13 +65,18 @@
                             circle
                             @click="showEditDialog(scope.row.id)"
                         ></el-button>
-                        <el-button
-                            type="warning"
-                            icon="el-icon-info"
-                            circle
-                            size="mini"
-                            @click="removeCurrentRow(scope.row.id)"
-                        ></el-button>
+                        <el-tooltip
+                            :enterable="false"
+                            content="查看对应数据信息"
+                        >
+                            <el-button
+                                type="warning"
+                                icon="el-icon-info"
+                                circle
+                                size="mini"
+                                @click="gotoDictDataPage(scope.row.dictType)"
+                            ></el-button>
+                        </el-tooltip>
                         <el-button
                             type="danger"
                             icon="el-icon-delete"
@@ -184,6 +195,9 @@ export default {
             if (refresh) {
                 this.fetchDictTypeList()
             }
+        },
+        gotoDictDataPage(dictTypeName) {
+            this.$router.push(`/dict-data/${dictTypeName}`)
         },
         closeEditDialog(refresh) {
             this.editDialogVisiable = false
