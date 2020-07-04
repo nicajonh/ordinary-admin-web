@@ -83,7 +83,7 @@ class SysPermissionServiceImpl : ServiceHelper<SysPermission>(), SysPermissionSe
                 }
                 it += SysPermissions.removeFlag eq persistence
             }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
-            .orderBy(SysPermissions.orderNum.asc())
+            .orderBy(orderCondition(SysPermissions, pageQueryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysPermissions.createEntity(row)

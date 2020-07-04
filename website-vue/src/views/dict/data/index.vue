@@ -106,7 +106,7 @@ export default {
             queryInfo: {
                 pageNumber: 1,
                 pageSize: 5,
-                orderField: 'updatedAt',
+                orderField: 'updated_at',
                 orderType: 'asc',
                 model: {
                     dictType: this.$route.params.typeName,
@@ -201,3 +201,4 @@ export default {
 </script>
 
 <style></style>
+ 

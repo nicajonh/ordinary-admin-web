@@ -105,7 +105,7 @@ class SysDictDataServiceIml : ServiceHelper<SysDictData>(), SysDictDataService, 
                 }
                 it += SysDictDatas.removeFlag eq persistence
             }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
-            .orderBy(SysDictDatas.updatedAt.desc())
+            .orderBy(orderCondition(SysDictDatas, pageQueryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysDictDatas.createEntity(row)

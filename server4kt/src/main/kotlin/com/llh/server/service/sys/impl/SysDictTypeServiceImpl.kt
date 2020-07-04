@@ -100,7 +100,7 @@ class SysDictTypeServiceImpl : ServiceHelper<SysDictType>(), SysDictTypeService,
                 }
                 it += SysDictTypes.removeFlag eq persistence
             }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
-            .orderBy(SysDictTypes.updatedAt.desc())
+            .orderBy(orderCondition(SysDictTypes,pageQueryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysDictTypes.createEntity(row)

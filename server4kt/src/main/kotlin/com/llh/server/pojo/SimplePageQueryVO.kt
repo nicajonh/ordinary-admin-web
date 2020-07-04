@@ -17,7 +17,7 @@ data class SimplePageQueryVO<T>(
     @ApiModelProperty(value = "每页数量", required = true)
     val pageSize: Int,
     @ApiModelProperty(value = "排序字段", required = true)
-    val orderField: String,
+    val orderField: String = "updatedAt",
     @ApiModelProperty(value = "排序方式。asc or desc", required = true)
     val orderType: String = "asc",
     @ApiModelProperty(value = "查询条件。简单查询都是查询模型类的字段。")

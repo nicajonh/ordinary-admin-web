@@ -10,17 +10,14 @@ import com.llh.server.pojo.PageDTO
 import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.pojo.vo.RoleInfoVO
 import com.llh.server.service.ServiceHelper
-import com.llh.server.service.sys.SysPermissionService
 import com.llh.server.service.sys.SysRoleService
 import me.liuwj.ktorm.database.Database
 import me.liuwj.ktorm.dsl.*
 import me.liuwj.ktorm.entity.add
 import me.liuwj.ktorm.entity.find
-import me.liuwj.ktorm.entity.removeIf
 import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 /**
@@ -100,7 +97,7 @@ class SysRoleServiceImpl : ServiceHelper<SysRole>(), SysRoleService, Logging {
                 }
                 it += SysRoles.removeFlag eq persistence
             }.limit(pageQueryVO.pageStartIndex(), pageQueryVO.pageSize)
-            .orderBy(SysRoles.orderNum.asc())
+            .orderBy(orderCondition(SysRoles, pageQueryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysRoles.createEntity(row)

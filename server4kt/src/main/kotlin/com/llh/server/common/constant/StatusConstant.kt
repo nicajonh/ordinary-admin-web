@@ -33,3 +33,9 @@ enum class AccountStatus {
      */
     REMOVED
 }
+
+enum class OrderDirection(val direction: String) {
+    ASC("asc"),
+    DESC("desc")
+}
+

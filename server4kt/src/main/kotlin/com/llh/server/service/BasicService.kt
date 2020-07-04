@@ -1,9 +1,16 @@
 package com.llh.server.service
 
+import com.llh.server.common.constant.OrderDirection
 import com.llh.server.common.constant.StatusConstant
 import com.llh.server.common.util.uuidStr
+import com.llh.server.dao.BasicDao
 import com.llh.server.model.BasicModel
 import com.llh.server.pojo.AccountVO
+import com.llh.server.pojo.SimplePageQueryVO
+import me.liuwj.ktorm.dsl.asc
+import me.liuwj.ktorm.dsl.desc
+import me.liuwj.ktorm.dsl.isNull
+import me.liuwj.ktorm.expression.OrderByExpression
 import org.springframework.security.core.context.SecurityContextHolder
 import java.time.LocalDateTime
 
@@ -69,5 +76,25 @@ open class ServiceHelper<E : BasicModel<E>> {
 
     fun currentUserId(): String? {
         return currentUser()?.id
+    }
+
+    /**
+     * 单一排序条件生成函数。
+     *
+     * 传入不合法字段时会使用`updatedAt`进行排序
+     */
+    fun orderCondition(dao: BasicDao<E>, queryVO: SimplePageQueryVO<E>): OrderByExpression {
+        val orderField = queryVO.orderField
+        val orderDirection = queryVO.orderType.toLowerCase()
+        return try {
+            val col = dao.columns.first {
+                it.name == orderField
+            } // 应该不会有相同字段名的情况吧
+            if (orderDirection == OrderDirection.ASC.direction)
+                col.asc()
+            else col.desc()
+        } catch (e: Exception) { // 避免传入不合法的字段
+            dao.updatedAt.asc()
+        }
     }
 }

@@ -75,11 +75,11 @@ class SysLogServiceImpl : ServiceHelper<SysLog>(), SysLogService, Logging {
             .select(SysLogs.columns)
             .whereWithConditions {
                 if (queryVO.model?.methodName?.isNotEmpty() == true) {
-                    it += SysLogs["methodName"] like "%${queryVO.model.methodName}%"
+                    it += SysLogs.methodName like "%${queryVO.model.methodName}%"
                 }
                 it += SysLogs.removeFlag eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
-            .orderBy(SysLogs.updatedAt.desc())
+            .orderBy(orderCondition(SysLogs, queryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysLogs.createEntity(row)

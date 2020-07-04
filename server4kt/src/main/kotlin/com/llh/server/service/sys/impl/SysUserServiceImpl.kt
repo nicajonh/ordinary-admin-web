@@ -129,7 +129,7 @@ class SysUserServiceImpl : ServiceHelper<SysUser>(), SysUserService, Logging {
                 }
                 it += SysUsers.removeFlag eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
-            .orderBy(SysUsers.updatedAt.desc())
+            .orderBy(orderCondition(SysUsers, queryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysUsers.createEntity(row)

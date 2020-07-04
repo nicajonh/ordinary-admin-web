@@ -130,7 +130,7 @@ class SysDeptServiceImpl : ServiceHelper<SysDept>(), SysDeptService, Logging {
                 }
                 it += SysDepts.removeFlag eq persistence
             }.limit(queryVO.pageStartIndex(), queryVO.pageSize)
-            .orderBy(SysDepts.updatedAt.desc())
+            .orderBy(orderCondition(SysDepts, queryVO))
             .map { row ->
                 total = row.query.totalRecords
                 SysDepts.createEntity(row)
