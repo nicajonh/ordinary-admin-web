@@ -31,7 +31,7 @@ class ReTest {
 
     @Test
     fun testTools() {
-        val rs = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "loveYou")
+        val rs = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, "loveYou")
         println(rs)
 
     }

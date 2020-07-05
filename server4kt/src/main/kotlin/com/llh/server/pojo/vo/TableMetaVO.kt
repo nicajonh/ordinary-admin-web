@@ -7,6 +7,8 @@
  */
 package com.llh.server.pojo.vo
 
+import com.google.common.base.CaseFormat
+
 /**
  * 数据库表的元信息
  */
@@ -28,4 +30,14 @@ data class TableColumnInfoVO(
     , val dataType: String
     , val columnType: String
     , val columnComment: String?
-)
+) {
+    /** 列名转换为小驼峰写法 */
+    val columnNameLowerCamel: String
+        get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, this.columnName)
+
+
+    /** 列名转换为中划线写法 */
+    val columnNameLowerHyphen: String
+        get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_HYPHEN, this.columnName)
+
+}
