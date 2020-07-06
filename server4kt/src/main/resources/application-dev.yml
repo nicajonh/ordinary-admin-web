@@ -1,4 +1,8 @@
 spring:
+    freemarker:
+        cache: false
+        template-loader-path: classpath:/freemarker/
+        suffix: ftl
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.cj.jdbc.Driver

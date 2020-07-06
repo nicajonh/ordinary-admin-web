@@ -20,15 +20,14 @@
         <druid.version>1.1.14</druid.version>
         <ktorm.version>2.7.2</ktorm.version>
         <hutool.version>5.3.7</hutool.version>
-        <velocity.version>1.7</velocity.version>
+
     </properties>
 
     <dependencies>
 
         <dependency>
-            <artifactId>velocity</artifactId>
-            <groupId>org.apache.velocity</groupId>
-            <version>${velocity.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
 
 

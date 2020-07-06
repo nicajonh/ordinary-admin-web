@@ -26,7 +26,7 @@ data class TableColumnInfoVO(
     , val tableSchema: String
     , val columnName: String
     , val columnDefault: String?
-    , val isNullable: String
+    , val nullable: String
     , val dataType: String
     , val columnType: String
     , val columnComment: String?
@@ -35,9 +35,16 @@ data class TableColumnInfoVO(
     val columnNameLowerCamel: String
         get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, this.columnName)
 
+    /** 列名转换为大驼峰写法 */
+    val columnNameUpperCamel: String
+        get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, this.columnName)
 
     /** 列名转换为中划线写法 */
     val columnNameLowerHyphen: String
         get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_HYPHEN, this.columnName)
+
+    /** 列名转换为大驼峰写法 */
+    val tableNameUpperCamel: String
+        get() = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, this.tableName)
 
 }
