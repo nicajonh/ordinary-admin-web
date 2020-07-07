@@ -1,5 +1,6 @@
 package com.llh.server.daotest
 
+import com.llh.server.common.config.CodeGenProperties
 import com.llh.server.dao.SysDepts
 import com.llh.server.model.SysDept
 import com.llh.server.service.sys.SysDeptService
@@ -32,8 +33,17 @@ class DeptDaoTest {
     @Qualifier("sysDeptService")
     private lateinit var sysDeptService: SysDeptService
 
-    @Autowired @Qualifier("tableMetaInfoService")
+    @Autowired
+    @Qualifier("tableMetaInfoService")
     private lateinit var tableService: TableMetaInfoService
+
+    @Autowired
+    private lateinit var gencode: CodeGenProperties
+
+    @Test
+    fun testConfig() {
+        println(gencode)
+    }
 
     @Test
     fun findTree() {
@@ -61,14 +71,15 @@ where TABLE_SCHEMA = ?
         }
         names.forEach { println(it) }
     }
+
     @Test
-    fun testQuery(){
+    fun testQuery() {
         val fetchTablesInfo = tableService.fetchTablesInfo()
         println(fetchTablesInfo)
     }
 
     @Test
-    fun testQuery2(){
+    fun testQuery2() {
         val fetchTablesInfo = tableService.fetchColumnInfoByTableName("m_sys_role_perm")
         println(fetchTablesInfo)
     }

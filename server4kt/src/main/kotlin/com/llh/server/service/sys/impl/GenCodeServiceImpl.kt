@@ -1,5 +1,7 @@
 package com.llh.server.service.sys.impl
 
+import com.llh.server.common.config.CodeGenProperties
+import com.llh.server.common.util.ConvertType4Kt
 import com.llh.server.pojo.vo.TableColumnInfoVO
 import com.llh.server.service.sys.GenCodeService
 import com.llh.server.service.sys.TableMetaInfoService
@@ -23,6 +25,9 @@ class GenCodeServiceImpl : GenCodeService {
     private lateinit var configuration: Configuration
 
     @Autowired
+    private lateinit var codeGenProperties: CodeGenProperties
+
+    @Autowired
     @Qualifier("tableMetaInfoService")
     private lateinit var tableMetaInfoService: TableMetaInfoService
 
@@ -34,6 +39,10 @@ class GenCodeServiceImpl : GenCodeService {
     private fun genModel4ktorm(colsInfo: List<TableColumnInfoVO>): String {
         val template = configuration.getTemplate("model-ktorm.ftl")
         return FreeMarkerTemplateUtils
-            .processTemplateIntoString(template, mapOf("cols" to colsInfo))
+            .processTemplateIntoString(template,
+                mapOf("cols" to colsInfo,
+                    "typeConvert" to ConvertType4Kt(codeGenProperties.typeMap),
+                    "auth" to codeGenProperties.auth)
+            )
     }
 }
