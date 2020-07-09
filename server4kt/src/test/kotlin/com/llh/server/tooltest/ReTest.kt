@@ -35,4 +35,11 @@ class ReTest {
         println(rs)
 
     }
+
+    @Test
+    fun testSubString() {
+        val text = "sub_string"
+        val prefix = "sub"
+        println(text.subSequence(prefix.length until text.length))
+    }
 }

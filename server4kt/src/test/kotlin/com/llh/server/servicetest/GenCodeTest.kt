@@ -19,7 +19,7 @@ class GenCodeTest {
 
     @Test
     fun testGen() {
-        val gened = genCodeService.genCodeByTableName("sys_dict_data")
+        val gened = genCodeService.genCodeByTableName("m_sys_user_role")
         println(gened)
     }
 }
