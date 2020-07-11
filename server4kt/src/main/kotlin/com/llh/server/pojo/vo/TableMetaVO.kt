@@ -30,6 +30,7 @@ data class TableColumnInfoVO(
     , val dataType: String
     , val columnType: String
     , val columnComment: String?
+    , val columnStrMax: Int // 被转换为java中int类型了，肯定是有值的。
 ) {
     /** 列名转换为小驼峰写法 */
     val columnNameLowerCamel: String

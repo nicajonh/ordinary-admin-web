@@ -25,7 +25,7 @@ class ConvertType4Kt(private val typeMap: Map<String, String>?) : TemplateMethod
     override fun exec(arguments: MutableList<Any?>?): Any {
         if (arguments.isNullOrEmpty() || arguments.size != 2) {
             throw  TemplateModelException(
-                "Error: Expecting 1 string arguments here")
+                "Error: Expecting 2 string arguments here")
         }
         val dataType = (arguments[0] as TemplateScalarModel).asString
         val colType = (arguments[1] as TemplateScalarModel).asString
@@ -34,4 +34,22 @@ class ConvertType4Kt(private val typeMap: Map<String, String>?) : TemplateMethod
         return typeMap?.get(dataType.toUpperCase()) ?: "Any"
     }
 
+}
+
+class Convert4KtormBindFun(private val typeMap: Map<String, String>? = null) : TemplateMethodModelEx {
+    override fun exec(arguments: MutableList<Any?>?): Any {
+        if (arguments.isNullOrEmpty() || arguments.size != 2) {
+            throw  TemplateModelException(
+                "Error: Expecting 1 string arguments here")
+        }
+        val dataType = (arguments[0] as TemplateScalarModel).asString
+        val colType = (arguments[1] as TemplateScalarModel).asString
+        if (dataType.toLowerCase() == "tinyint" && colType.toLowerCase() == "tinyint(1)")
+            return "boolean"
+        if (dataType.toLowerCase() == "tinyint" && colType.toLowerCase() != "tinyint(1)")
+            return "int"
+        // 由于 ktorm 类型映射函数名与 mysql 类型关键字大体上是相同的。
+        return typeMap?.get(dataType.toUpperCase()) ?: dataType.toLowerCase()
+
+    }
 }

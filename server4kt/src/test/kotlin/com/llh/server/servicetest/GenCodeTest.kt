@@ -1,6 +1,7 @@
 package com.llh.server.servicetest
 
-import com.llh.server.service.sys.GenCodeService
+import com.llh.server.pojo.vo.CodeGenVO
+import com.llh.server.service.codegen.GenCodeService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,7 +20,9 @@ class GenCodeTest {
 
     @Test
     fun testGen() {
-        val gened = genCodeService.genCodeByTableName("m_sys_user_role")
+        val codeGenVO = CodeGenVO(tableName = "sys_dict_type",
+            modelDescription = "用户", urlPrefix = "user",javaPackage = "com.llh.server")
+        val gened = genCodeService.genCodeByTableName(codeGenVO)
         println(gened)
     }
 }

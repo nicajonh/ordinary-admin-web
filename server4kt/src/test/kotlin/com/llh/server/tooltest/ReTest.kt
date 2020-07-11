@@ -42,4 +42,11 @@ class ReTest {
         val prefix = "sub"
         println(text.subSequence(prefix.length until text.length))
     }
+
+    @Test
+    fun testAddClo() {
+        val text = "a,b,c,d"
+        val rs = text.split(",").map { "\"$it\"" }.reduce { acc, s -> "$acc,$s" }
+        println(rs)
+    }
 }

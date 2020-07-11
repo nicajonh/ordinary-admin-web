@@ -3,9 +3,6 @@
  */
 package com.llh.server.dao
 
-import com.llh.server.dao.SysDictTypes.bindTo
-import com.llh.server.dao.SysLogs.bindTo
-import com.llh.server.dao.SysPermissions.bindTo
 import com.llh.server.model.*
 import me.liuwj.ktorm.schema.boolean
 import me.liuwj.ktorm.schema.int

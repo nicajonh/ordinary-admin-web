@@ -1,5 +1,6 @@
 package com.llh.server.service.sys.impl
 
+import com.llh.server.common.config.CodeGenProperties
 import com.llh.server.pojo.vo.TableColumnInfoVO
 import com.llh.server.pojo.vo.TableMetaInfoVO
 import com.llh.server.service.sys.TableMetaInfoService
@@ -21,6 +22,9 @@ import java.util.regex.Pattern
 class TableMetaInfoServiceImpl : TableMetaInfoService {
     @Autowired
     private lateinit var database: Database
+
+    @Autowired
+    private lateinit var codeGenProperties: CodeGenProperties
 
     @Value("\${spring.datasource.druid.url}")
     private lateinit var dataConnection: String
@@ -64,7 +68,8 @@ c.COLUMN_DEFAULT,
 c.IS_NULLABLE,
 c.DATA_TYPE,
 c.COLUMN_TYPE,
-c.COLUMN_COMMENT
+c.COLUMN_COMMENT,
+c.CHARACTER_MAXIMUM_LENGTH
 FROM
 `information_schema`.`COLUMNS` AS c
 WHERE
@@ -87,8 +92,16 @@ c.TABLE_NAME = ?
     }
 
     override fun fetchColumnInfoByTableName(tableName: String): List<TableColumnInfoVO> {
+        var querySql = queryColsSQL
+        if (!codeGenProperties.ignoreFields.isNullOrBlank()) {
+            // "a,b,c,d" --> `"a","b","c","d"`
+            val ignoreFields = codeGenProperties.ignoreFields!!.split(",")
+                .map { "\"$it\"" }.reduce { acc, s -> "$acc,$s" }
+            // 应该不会有sql注入的情况吧
+            querySql = "$queryColsSQL and c.COLUMN_NAME not in($ignoreFields)"
+        }
         return database.useConnection { connection ->
-            connection.prepareStatement(queryColsSQL).use { statement ->
+            connection.prepareStatement(querySql).use { statement ->
                 statement.setString(1, tableSchemaName())
                 statement.setString(2, tableName)
                 statement.executeQuery().iterable().map {
@@ -100,7 +113,8 @@ c.TABLE_NAME = ?
                         nullable = it.getString(5),
                         dataType = it.getString(6),
                         columnType = it.getString(7),
-                        columnComment = it.getString(8)
+                        columnComment = it.getString(8),
+                        columnStrMax = it.getInt(9)
                     )
                 }
             }

@@ -1,11 +1,17 @@
-<#assign className = tableNameVO.noPrefixUpperCamel >
+<#assign ClassName = tableNameVO.noPrefixUpperCamel >
+<#assign className = tableNameVO.noPrefixLowerCamel >
+<#if customInfo.javaPackage??>
+    <#lt>package ${customInfo.javaPackage}.dao
+</#if>
 /**
 *  DAO层
 * CreatedAt: ${.now?datetime}
 * @author ${auth}
 */
-object ${className}s : BasicDao<${className}>("${tableNameVO.tableName}"){
+object ${ClassName}s : BasicDao<${ClassName}>("${tableNameVO.tableName}"){
 <#list cols as item >
-    val ${item.columnNameLowerCamel} = ${item.dataType}("${item.columnName}").bindTo { it.${item.columnNameLowerCamel} }
+    val ${item.columnNameLowerCamel} = <#rt>
+    <#lt>${typeConvert(item.dataType , item.columnType)}("${item.columnName}")<#rt>
+    <#lt>.bindTo { it.${item.columnNameLowerCamel} }
 </#list>
 }

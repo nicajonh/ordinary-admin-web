@@ -1,3 +1,7 @@
+<#if customInfo.javaPackage??>
+    <#lt>package ${customInfo.javaPackage}.service.impl
+
+</#if>
 import com.llh.server.pojo.PageDTO
 import com.llh.server.pojo.SimplePageQueryVO
 import com.llh.server.service.ServiceHelper
@@ -9,25 +13,24 @@ import me.liuwj.ktorm.entity.sequenceOf
 import org.apache.logging.log4j.kotlin.Logging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-<#assign aDatetime = .now>
-<#-- TODO 测试下这种写法能用不？ -->
-<#assign className = cols[0].tableNameUpperCamel>
-<#assign daoName = cols[0].tableNameUpperCamel+'s'>
+<#assign ClassName = tableNameVO.noPrefixUpperCamel >
+<#assign className = tableNameVO.noPrefixLowerCamel >
+<#assign daoName = tableNameVO.noPrefixUpperCamel+'s'>
 /**
- * ${cols[0].tableNameUpperCamel}ServiceImpl
+ * ${ClassName}ServiceImpl
  *
  * CreatedAt: ${.now?datetime}
  *
  * @author ${auth}
  */
-@Service("${cols[0].tableNameLowCamel}Service")
-class ${className}ServiceImpl : ServiceHelper<${className}>(), {className}Service, Logging {
+@Service("${className}Service")
+class ${ClassName}ServiceImpl : ServiceHelper<${ClassName}>(), ${ClassName}Service, Logging {
 
     @Autowired
     private lateinit var database: Database
 
 
-    override fun save(entity: ${className}): ${className} {
+    override fun save(entity: ${ClassName}): ${ClassName} {
         initValueForModelToDB(entity)
         database.sequenceOf(${daoName}).add(entity)
         return entity
@@ -45,7 +48,7 @@ class ${className}ServiceImpl : ServiceHelper<${className}>(), {className}Servic
         return updated > 0
     }
 
-    override fun updateById(entity: ${className}): Boolean {
+    override fun updateById(entity: ${ClassName}): Boolean {
         val model = findById(entity.id) ?: return false
         model.copyProperties(entity)
         model.updatedAt = getNow()
@@ -53,25 +56,25 @@ class ${className}ServiceImpl : ServiceHelper<${className}>(), {className}Servic
         return model.flushChanges() > 0
     }
 
-    override fun findById(id: String): ${className}? {
+    override fun findById(id: String): ${ClassName}? {
         val find = database.sequenceOf(${daoName}).find {
             it.id eq id and (it.removeFlag eq persistence)
         }
         if (find == null)
             <#-- ${r"${id}"} 原样输出  -->
-            logger.warn("not find ${className}(id:${r"${id}"} ) info")
+            logger.warn("not find ${ClassName}(id:${r"${id}"}) info")
         return find
     }
 
 
-    override fun page(queryVO: SimplePageQueryVO<${className}>): PageDTO<${className}> {
+    override fun page(queryVO: SimplePageQueryVO<${ClassName}>): PageDTO<${className}> {
         return pageQuery(queryVO)
     }
 
 
     // ----------------- private fun  ------------------
 
-    private fun pageQuery(queryVO: SimplePageQueryVO<${className}>): PageDTO<${className}> {
+    private fun pageQuery(queryVO: SimplePageQueryVO<${ClassName}>): PageDTO<${className}> {
         var total = 0
         val query = database.from(${daoName})
             .select(${daoName}.columns) // 指定需要查询的列
