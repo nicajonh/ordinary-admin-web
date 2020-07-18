@@ -2,6 +2,7 @@
  * 当前模块所需要的对象、字段验证等信息。
  */
 export default {
+    // 此方案不行。赋值后其值会一直保存的。
     entity: {
         modelDescription: '',
         urlPrefix: '',

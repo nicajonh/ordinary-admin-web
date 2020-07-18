@@ -36,17 +36,26 @@
                 </el-form-item>
             </el-form>
         </el-dialog>
+        <ResultDialog :codeMap="codeGenResult" ref="resultDialogRef" />
     </div>
 </template>
 
 <script>
 import CodeGenAPI from '@/api/code-gen'
 import Entity from './_entity'
+import ResultDialog from './Result'
 export default {
+    components: { ResultDialog },
     data() {
         return {
-            formModel: Entity.entity,
-            formModelValidtion: Entity.entityValidtion
+            formModel: {
+                modelDescription: '',
+                urlPrefix: '',
+                tableName: '',
+                javaPackage: undefined
+            },
+            formModelValidtion: Entity.entityValidtion,
+            codeGenResult: {}
         }
     },
     props: {
@@ -64,7 +73,12 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    alert('submit!' + CodeGenAPI.codeGen)
+                    CodeGenAPI.codeGen(this.formModel).then(resp => {
+                        if (resp.data) {
+                            this.codeGenResult = resp.data
+                            this.$refs['resultDialogRef'].visiableFunc(true)
+                        }
+                    })
                 } else {
                     console.log('error submit!!')
                     return false
@@ -72,20 +86,21 @@ export default {
             })
         },
         resetForm(formName) {
+            console.log(this.$refs['form'].resetFields())
+            this.formModel = Entity.entity
+            this.$refs['form'].resetFields()
             this.$refs[formName].resetFields()
         },
-        addFormClosed(refresh){
+        addFormClosed(refresh) {
             // 初始化数据
             this.formModel = Entity.entity
-            this.$refs['addFormRef'].resetFields()
+            this.$refs['form'].resetFields()
             this.$emit('closeDialog', refresh)
         }
     },
     watch: {
         tableName: function(val) {
-            
             this.formModel.tableName = val
-            
         }
     }
 }
