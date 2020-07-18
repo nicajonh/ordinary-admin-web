@@ -25,6 +25,7 @@ const routes = [
             { path: '/dept', component: () => import('@/views/dept') },
             { path: '/role', component: () => import('@/views/role') },
             { path: '/dict', component: () => import('@/views/dict') },
+            { path: '/code-gen', component: () => import('@/views/code-gen') },
             {
                 path: '/dict-data/:typeName',
                 component: () => import('@/views/dict/data'),

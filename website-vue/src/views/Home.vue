@@ -61,6 +61,10 @@
                         <i class="el-icon-s-custom"></i>
                         <span slot="title">字典管理</span>
                     </el-menu-item>
+                    <el-menu-item index="/code-gen" @click="saveActivePath('//code-gen')">
+                        <i class="el-icon-s-custom"></i>
+                        <span slot="title">代码生成</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
