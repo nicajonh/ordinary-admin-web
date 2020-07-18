@@ -1,6 +1,7 @@
 package com.llh.server.service.codegen.impl
 
 import com.llh.server.common.config.CodeGenProperties
+import com.llh.server.common.util.Convert4JSBindFun
 import com.llh.server.common.util.Convert4KtormBindFun
 import com.llh.server.common.util.ConvertType4Kt
 import com.llh.server.pojo.vo.CodeGenVO
@@ -37,13 +38,20 @@ class GenCodeServiceImpl : GenCodeService {
 
     override fun genCodeByTableName(codeGenVO: CodeGenVO): MutableMap<String, String> {
         val colsInfo = tableMetaInfoService.fetchColumnInfoByTableName(codeGenVO.tableName)
-        val fileAndCodeMap = mutableMapOf<String, String>()
-        fileAndCodeMap["model.kt"] = genModel4ktorm(colsInfo, codeGenVO)
-        fileAndCodeMap["serviceImpl.kt"] = genServiceImpl4ktorm(colsInfo, codeGenVO)
-        fileAndCodeMap["modelvo.kt"] = genModelVO4kotlin(colsInfo, codeGenVO)
-        fileAndCodeMap["dao.kt"] = genDAO4kotlin(colsInfo, codeGenVO)
-        fileAndCodeMap["controller.kt"] = genController(colsInfo, codeGenVO)
-        return fileAndCodeMap
+        val fileNameAndCodeMap = mutableMapOf<String, String>()
+        fileNameAndCodeMap["model.kt"] = genModel4ktorm(colsInfo, codeGenVO)
+        fileNameAndCodeMap["serviceImpl.kt"] = genServiceImpl4ktorm(colsInfo, codeGenVO)
+        fileNameAndCodeMap["modelvo.kt"] = genModelVO4kotlin(colsInfo, codeGenVO)
+        fileNameAndCodeMap["dao.kt"] = genDAO4kotlin(colsInfo, codeGenVO)
+        fileNameAndCodeMap["controller.kt"] = genController(colsInfo, codeGenVO)
+        return fileNameAndCodeMap
+    }
+
+    override fun genCodeByTableNameForVue(codeGenVO: CodeGenVO): MutableMap<String, String> {
+        val fileNameAndCodeMap = mutableMapOf<String, String>()
+        val colsInfo = tableMetaInfoService.fetchColumnInfoByTableName(codeGenVO.tableName)
+        fileNameAndCodeMap["index.vue"] = genIndexVue(colsInfo, codeGenVO)
+        return fileNameAndCodeMap
     }
 
     override fun fetchTables(): List<TableMetaInfoVO> {
@@ -51,6 +59,21 @@ class GenCodeServiceImpl : GenCodeService {
     }
 
     // ------------------------- private fun  -----------------------------
+
+    private fun genIndexVue(colsInfo: List<TableColumnInfoVO>, codeGenVO: CodeGenVO): String {
+        val template = configuration.getTemplate("index.vue.ftlh")
+
+        return FreeMarkerTemplateUtils
+            .processTemplateIntoString(template,
+                mapOf("cols" to colsInfo,
+                    "tableNameVO" to TableNameVO(codeGenVO.tableName, codeGenProperties.tablePrefix),
+                    "customInfo" to codeGenVO,
+                    "typeConvert" to Convert4JSBindFun(codeGenProperties.typeMapJs),
+                    "auth" to codeGenProperties.auth)
+            )
+    }
+
+
     private fun genModel4ktorm(colsInfo: List<TableColumnInfoVO>, codeGenVO: CodeGenVO): String {
         val template = configuration.getTemplate("model-ktorm.ftlh")
         return FreeMarkerTemplateUtils

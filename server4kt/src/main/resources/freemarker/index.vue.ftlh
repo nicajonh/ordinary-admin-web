@@ -1,3 +1,7 @@
+<#assign ClassName = tableNameVO.noPrefixUpperCamel >
+<#assign className = tableNameVO.noPrefixLowerCamel >
+<#assign classnameHyphen = tableNameVO.noPrefixLowerHyphen >
+<#assign API = tableNameVO.noPrefixLowerCamel + 'API' >
 <template>
     <div>
         <el-card>
@@ -48,9 +52,10 @@
 </template>
 
 <script>
-import { pageList } from '@/api/role'
+import ${API} from '@/api/${classnameHyphen}'
 import AddRoleDialog from './Add'
 export default {
+    name:'${ClassName}Index',
     components: { AddRoleDialog },
     data() {
         return {
@@ -61,9 +66,14 @@ export default {
                 orderField: 'updated_at',
                 orderType: 'asc',
                 model: {
-                    roleName: ''
-                }
-            },
+      <#list cols as item >
+                    ${item.columnNameLowerCamel}:<#rt>
+                <#if item.nullable?upper_case == "YES" >
+                    undefined<#t>
+                <#else><#rt>
+                ${typeConvert(item.dataType , item.columnType)}<#rt>
+                </#if><#if item_has_next>,</#if>
+      </#list>},
             pageObj: {
                 list: [],
                 totalPage: 0,

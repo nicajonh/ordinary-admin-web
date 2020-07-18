@@ -50,6 +50,21 @@ class Convert4KtormBindFun(private val typeMap: Map<String, String>? = null) : T
             return "int"
         // 由于 ktorm 类型映射函数名与 mysql 类型关键字大体上是相同的。
         return typeMap?.get(dataType.toUpperCase()) ?: dataType.toLowerCase()
+    }
+}
 
+class Convert4JSBindFun(private val typeMapJs: Map<String, String>? = null) : TemplateMethodModelEx {
+    override fun exec(arguments: MutableList<Any?>?): Any {
+        if (arguments.isNullOrEmpty() || arguments.size != 2) {
+            throw  TemplateModelException(
+                "Error: Expecting 1 string arguments here")
+        }
+        val dataType = (arguments[0] as TemplateScalarModel).asString
+        val colType = (arguments[1] as TemplateScalarModel).asString
+        if (dataType.toLowerCase() == "tinyint" && colType.toLowerCase() == "tinyint(1)")
+            return "Boolean()"
+        if (dataType.toLowerCase() == "tinyint" && colType.toLowerCase() != "tinyint(1)")
+            return "0"
+        return typeMapJs?.get(dataType.toUpperCase()) ?: "String()" // 默认返回字符串
     }
 }

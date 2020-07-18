@@ -87,12 +87,17 @@ data class TableNameVO(
         get() = convertLowerCamel(tableNameNoPrefix())
     val noPrefixUpperCamel: String
         get() = convertUpperCamel(tableNameNoPrefix())
+    val noPrefixLowerHyphen: String
+        get() = convertLowerHyphen(tableNameNoPrefix())
+    private var _noPrefix: String = "" // 缓存已经的计算值。避免重复计算。
 
     private fun tableNameNoPrefix(): String {
         prefix ?: return this.tableName
-        return if (this.tableName.startsWith(prefix))
-            this.tableName.substring(prefix.length until this.tableName.length)
-        else this.tableName
+        if (_noPrefix.isNotBlank()) return _noPrefix
+        return if (this.tableName.startsWith(prefix)) {
+            _noPrefix = this.tableName.substring(prefix.length until this.tableName.length)
+            _noPrefix
+        } else this.tableName
     }
 
 

@@ -13,6 +13,10 @@ import com.llh.server.pojo.vo.TableMetaInfoVO
 interface GenCodeService {
     fun genCodeByTableName(codeGenVO: CodeGenVO): MutableMap<String, String>
 
+    /** 生成vue框架的代码。 */
+    @Deprecated("测试用的。测完了删除。")
+    fun genCodeByTableNameForVue(codeGenVO: CodeGenVO): MutableMap<String, String>
+
     /** 获取当前数据库的所有表信息 */
     fun fetchTables(): List<TableMetaInfoVO>
 }

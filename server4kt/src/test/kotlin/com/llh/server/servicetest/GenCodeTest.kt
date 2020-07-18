@@ -1,5 +1,6 @@
 package com.llh.server.servicetest
 
+import com.llh.server.common.config.CodeGenProperties
 import com.llh.server.pojo.vo.CodeGenVO
 import com.llh.server.service.codegen.GenCodeService
 import org.junit.jupiter.api.Test
@@ -18,11 +19,27 @@ class GenCodeTest {
     @Autowired
     private lateinit var genCodeService: GenCodeService
 
+    @Autowired
+    private lateinit var codeGenProperties: CodeGenProperties
+    @Test
+    fun testProperties(){
+
+        println(codeGenProperties)
+    }
+
     @Test
     fun testGen() {
         val codeGenVO = CodeGenVO(tableName = "sys_dict_type",
             modelDescription = "用户", urlPrefix = "user",javaPackage = "com.llh.server")
         val gened = genCodeService.genCodeByTableName(codeGenVO)
+        println(gened)
+    }
+
+    @Test
+    fun testGenVue() {
+        val codeGenVO = CodeGenVO(tableName = "sys_dict_type",
+            modelDescription = "用户", urlPrefix = "user",javaPackage = "com.llh.server")
+        val gened = genCodeService.genCodeByTableNameForVue(codeGenVO)
         println(gened)
     }
 }
