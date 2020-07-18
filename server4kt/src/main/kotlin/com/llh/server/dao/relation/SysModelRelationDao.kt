@@ -14,14 +14,14 @@ import me.liuwj.ktorm.schema.varchar
 
 
 object RolePermRelations : Table<RolePermRelation>("m_sys_role_perm") {
-    val id by varchar("id").primaryKey().bindTo { it.id }
-    val roleId by varchar("role_id").bindTo { it.roleId }
-    val permId by varchar("perm_id").bindTo { it.permId }
+    val id = varchar("id").primaryKey().bindTo { it.id }
+    val roleId = varchar("role_id").bindTo { it.roleId }
+    val permId = varchar("perm_id").bindTo { it.permId }
 }
 
 object UserRoleRelations : Table<UserRoleRelation>("m_sys_role_perm") {
-    val id by varchar("id").primaryKey().bindTo { it.id }
-    val roleId by varchar("role_id").bindTo { it.roleId }
-    val userId by varchar("user_id").bindTo { it.userId }
+    val id = varchar("id").primaryKey().bindTo { it.id }
+    val roleId = varchar("role_id").bindTo { it.roleId }
+    val userId = varchar("user_id").bindTo { it.userId }
 }
 

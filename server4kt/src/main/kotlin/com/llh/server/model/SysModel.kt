@@ -3,6 +3,7 @@
  */
 package com.llh.server.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.llh.server.pojo.vo.RoleInfoVO
 import me.liuwj.ktorm.entity.Entity
 
@@ -18,6 +19,7 @@ interface SysUser : BasicModel<SysUser> {
 
     var username: String
 
+    @get:JsonIgnore
     var password: String
 
     var email: String
@@ -170,6 +172,7 @@ interface SysDictType : BasicModel<SysDictType> {
 /** 字典数据表 sys_dict_data */
 interface SysDictData : BasicModel<SysDictData> {
     companion object : Entity.Factory<SysDictData>()
+
     /** 字典标签。给人看的。  dict_label */
     var dictLabel: String
 

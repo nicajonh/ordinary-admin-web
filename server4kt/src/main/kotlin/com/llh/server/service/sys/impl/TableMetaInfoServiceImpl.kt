@@ -5,7 +5,7 @@ import com.llh.server.pojo.vo.TableColumnInfoVO
 import com.llh.server.pojo.vo.TableMetaInfoVO
 import com.llh.server.service.sys.TableMetaInfoService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.database.iterable
+import me.liuwj.ktorm.database.asIterable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -81,7 +81,7 @@ c.TABLE_NAME = ?
         return database.useConnection { connection ->
             connection.prepareStatement(queryTablesSQL).use { statement ->
                 statement.setString(1, tableSchemaName())
-                statement.executeQuery().iterable().map {
+                statement.executeQuery().asIterable().map {
                     TableMetaInfoVO(tableName = it.getString(1),
                         tableType = it.getString(2),
                         tableSchema = it.getString(3)
@@ -104,7 +104,7 @@ c.TABLE_NAME = ?
             connection.prepareStatement(querySql).use { statement ->
                 statement.setString(1, tableSchemaName())
                 statement.setString(2, tableName)
-                statement.executeQuery().iterable().map {
+                statement.executeQuery().asIterable().map {
                     TableColumnInfoVO(
                         tableName = it.getString(1),
                         tableSchema = it.getString(2),

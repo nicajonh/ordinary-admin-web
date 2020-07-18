@@ -1,17 +1,10 @@
 package com.llh.server.daotest
 
 import com.llh.server.common.config.CodeGenProperties
-import com.llh.server.dao.SysDepts
-import com.llh.server.model.SysDept
 import com.llh.server.service.sys.SysDeptService
 import com.llh.server.service.sys.TableMetaInfoService
 import me.liuwj.ktorm.database.Database
-import me.liuwj.ktorm.database.iterable
-import me.liuwj.ktorm.dsl.eq
-import me.liuwj.ktorm.dsl.from
-import me.liuwj.ktorm.dsl.select
-import me.liuwj.ktorm.dsl.where
-import me.liuwj.ktorm.entity.sequenceOf
+import me.liuwj.ktorm.database.asIterable
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -66,7 +59,7 @@ where TABLE_SCHEMA = ?
         val names = database.useConnection { connection ->
             connection.prepareStatement(sql).use { statement ->
                 statement.setString(1, "admin_web")
-                statement.executeQuery().iterable().map { it.getString(1) }
+                statement.executeQuery().asIterable().map { it.getString(1) }
             }
         }
         names.forEach { println(it) }

@@ -12,12 +12,12 @@ import kotlin.reflect.KClass
  * @author llh
  */
 abstract class BasicDao<E : BasicModel<E>>(tableName: String) : Table<E>(tableName) {
-    val id by varchar("id").primaryKey().bindTo { it.id }
-    val createdAt by datetime("created_at").bindTo { it.createdAt }
-    val updatedAt by datetime("updated_at").bindTo { it.updatedAt }
-    val removeFlag by boolean("remove_flag").bindTo { it.removeFlag }
-    val updatedBy by varchar("updated_by").bindTo { it.updatedBy }
-    val createdBy by varchar("created_by").bindTo { it.createdBy }
+    val id = varchar("id").primaryKey().bindTo { it.id }
+    val createdAt = datetime("created_at").bindTo { it.createdAt }
+    val updatedAt = datetime("updated_at").bindTo { it.updatedAt }
+    val removeFlag = boolean("remove_flag").bindTo { it.removeFlag }
+    val updatedBy = varchar("updated_by").bindTo { it.updatedBy }
+    val createdBy = varchar("created_by").bindTo { it.createdBy }
 }
 
 @Deprecated("暂时没想好怎么用这个类")
@@ -26,9 +26,9 @@ abstract class BasicTableDSL<E : Any>(
     alias: String? = null,
     entityClass: KClass<E>? = null
 ) : BaseTable<E>(tableName, alias, entityClass) {
-    val id by varchar("id").primaryKey()
-    val createdAt by datetime("created_at")
-    val updatedAt by datetime("updated_at")
-    val updatedBy by varchar("updated_by")
-    val removeFlag by boolean("remove_flag")
+    val id = varchar("id").primaryKey()
+    val createdAt = datetime("created_at")
+    val updatedAt = datetime("updated_at")
+    val updatedBy = varchar("updated_by")
+    val removeFlag = boolean("remove_flag")
 }
