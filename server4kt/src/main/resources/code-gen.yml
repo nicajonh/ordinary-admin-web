@@ -1,0 +1,57 @@
+code-gen-properties:
+    auth: llh
+    table-prefix: m_
+    # 忽略字段。用于忽略公共的字段属性，用在查询时生成not in (xx)语句
+    ignore-fields: id,created_at,updated_at,remove_flag,updated_by,created_by
+    # 用于mysql与ktorm框架类型映射。
+    # 仅列出常用的类型
+    # 统一使用大写，方便进行比较
+    # mysql中Boolean的规范为TINYINT(1)，需要添加额外的判断
+    type-map:
+        TINYINT: Int
+        SMALLINT: Int
+        MEDIUMINT: Int
+        INT: Int
+        INTEGER: Int
+        BIGINT: Long
+        FLOAT: Float
+        DOUBLE: Double
+        DECIMAL: java.math.BigDecimal
+
+        CHAR: String
+        VARCHAR: String
+        TINYTEXT: String
+        tinytext: String
+        TEXT: String
+        MEDIUMTEXT: String
+        LONGTEXT: String
+
+        DATE: java.time.LocalDate
+        TIME: java.time.LocalTime
+        YEAR: Int
+        DATETIME: java.time.LocalDateTime
+        TIMESTAMP: java.time.LocalDateTime
+    type-map-js:
+        TINYINT: 0
+        SMALLINT: 0
+        MEDIUMINT: 0
+        INT: 0
+        INTEGER: 0
+        BIGINT: 0
+        FLOAT: 0
+        DOUBLE: 0
+        DECIMAL: 0
+
+        CHAR: String()
+        VARCHAR: String()
+        TINYTEXT: String()
+        tinytext: String()
+        TEXT: String()
+        MEDIUMTEXT: String()
+        LONGTEXT: String()
+
+        DATE: Date()
+        TIME: String()
+        YEAR: 1900
+        DATETIME: Date()
+        TIMESTAMP: Date()
