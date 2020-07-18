@@ -5,6 +5,7 @@ import com.llh.server.common.util.Convert4KtormBindFun
 import com.llh.server.common.util.ConvertType4Kt
 import com.llh.server.pojo.vo.CodeGenVO
 import com.llh.server.pojo.vo.TableColumnInfoVO
+import com.llh.server.pojo.vo.TableMetaInfoVO
 import com.llh.server.pojo.vo.TableNameVO
 import com.llh.server.service.codegen.GenCodeService
 import com.llh.server.service.sys.TableMetaInfoService
@@ -43,6 +44,10 @@ class GenCodeServiceImpl : GenCodeService {
         fileAndCodeMap["dao.kt"] = genDAO4kotlin(colsInfo, codeGenVO)
         fileAndCodeMap["controller.kt"] = genController(colsInfo, codeGenVO)
         return fileAndCodeMap
+    }
+
+    override fun fetchTables(): List<TableMetaInfoVO> {
+        return tableMetaInfoService.fetchTablesInfo()
     }
 
     // ------------------------- private fun  -----------------------------

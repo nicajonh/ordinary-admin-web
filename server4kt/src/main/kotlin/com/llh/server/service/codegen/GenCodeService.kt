@@ -1,6 +1,7 @@
 package com.llh.server.service.codegen
 
 import com.llh.server.pojo.vo.CodeGenVO
+import com.llh.server.pojo.vo.TableMetaInfoVO
 
 /**
  * GenCodeService
@@ -11,4 +12,7 @@ import com.llh.server.pojo.vo.CodeGenVO
  */
 interface GenCodeService {
     fun genCodeByTableName(codeGenVO: CodeGenVO): MutableMap<String, String>
+
+    /** 获取当前数据库的所有表信息 */
+    fun fetchTables(): List<TableMetaInfoVO>
 }
