@@ -5,12 +5,12 @@
             <el-table-column
                 prop="tableName"
                 label="表名"
-                width="180"
+                min-width="180"
             ></el-table-column>
             <el-table-column
                 prop="tableType"
                 label="类型"
-                width="180"
+                min-width="180"
             ></el-table-column>
             <el-table-column>
                 <template v-slot="scope">
